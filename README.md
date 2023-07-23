@@ -1,5 +1,10 @@
-BC Unaged Basin Database
-========================
+<!-- ---
+bibliography: docs/references/references.bib
+nocite: "@*"
+--- -->
+
+BC Ungauged Basin Database
+==========================
 
 ![The British Columbia Ungauged Basin
 Database](docs/notebooks/img/all_pts_and_stns.png)
