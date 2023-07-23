@@ -7,7 +7,7 @@ BC Ungauged Basin Database
 ==========================
 
 ![The British Columbia Ungauged Basin
-Database](docs/notebooks/img/all_pts_and_stns.png)
+Database](notebooks/img/all_pts_and_stns.png)
 
 Introduction
 ------------
@@ -36,7 +36,7 @@ repository.
 ### Setup
 
 See the [README.md under
-`docs/content/setup_scripts/`](https://github.com/dankovacek/bcub/tree/main/docs/setup_scripts/README.md)
+`docs/content/setup_scripts/`](https://github.com/dankovacek/bcub_demo/tree/main/docs/setup_scripts/README.md)
 to get started.
 
 ### References

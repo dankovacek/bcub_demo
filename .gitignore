@@ -3,7 +3,6 @@ notebooks/data/DEM/*
 notebooks/data/region_polygons.zip
 notebooks/data/geospatial_layers/*
 notebooks/data/basins/*
-_build/
 temp/
 
 .ipynb_checkpoints/
