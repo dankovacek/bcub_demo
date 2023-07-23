@@ -1,9 +1,9 @@
-tutorial/notebooks/data/DEM/
+*/notebooks/data/DEM/
 # tutorial/notebooks/data/region_polygons/
-tutorial/notebooks/data/region_polygons.zip
-tutorial/notebooks/data/geospatial_layers/
-tutorial/notebooks/data/basins/
-tutorial/_build/
+*/notebooks/data/region_polygons.zip
+*/notebooks/data/geospatial_layers/
+*/notebooks/data/basins/
+*/_build/
 temp/
 
 .ipynb_checkpoints/
