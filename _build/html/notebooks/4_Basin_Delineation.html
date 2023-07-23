@@ -1,0 +1,784 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>4. Basin Delineation &#8212; British Columbia Ungauged Basin Dataset</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/4_Basin_Delineation';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5. Basin Attribute Extraction" href="5_Attribute_Extraction.html" />
+    <link rel="prev" title="3. Pour Point Extraction" href="3_Pour_Point_Extraction.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../0_intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/bcub-logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/bcub-logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../0_intro.html">
+                    BC Ungauged Basin Database (BCUB)
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_Getting_Started.html">1. Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_DEM_Preprocessing.html">2. Digital Elevation Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_Pour_Point_Extraction.html">3. Pour Point Extraction</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">4. Basin Delineation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_Attribute_Extraction.html">5. Basin Attribute Extraction</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/dankovacek/bcub" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/dankovacek/bcub/issues/new?title=Issue%20on%20page%20%2Fnotebooks/4_Basin_Delineation.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/4_Basin_Delineation.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>4. Basin Delineation</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concatenate-batch-polygon-files-into-a-single-geopackage-optional">Concatenate Batch Polygon Files into a single Geopackage (optional)</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="basin-delineation">
+<h1>4. Basin Delineation<a class="headerlink" href="#basin-delineation" title="Permalink to this heading">#</a></h1>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/basin_batch.png"><img alt="../_images/basin_batch.png" src="../_images/basin_batch.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 8 </span><span class="caption-text">Pour points and derived basins for batch 1/12 for Vancouver Island.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Large sample basin delineation is a computationally intensive operation, but the Whitebox <code class="docutils literal notranslate"><span class="pre">unnest_basins</span></code> function performs really well.  Whitebox is written in <a class="reference external" href="https://www.rust-lang.org/">Rust</a>.  Many functions implicitly take care of paralellization to run efficiently.  We’ll carry out the operation by setting up batches to manage disk usage and RAM.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">whitebox</span> 
+
+<span class="n">wbt</span> <span class="o">=</span> <span class="n">whitebox</span><span class="o">.</span><span class="n">WhiteboxTools</span><span class="p">()</span>
+<span class="n">wbt</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># open the stream layer</span>
+<span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Point</span>
+<span class="kn">from</span> <span class="nn">shapely.validation</span> <span class="kn">import</span> <span class="n">make_valid</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">raster_to_vector_basins_batch</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    If we send too many pour points in a large raster, we can </span>
+<span class="sd">    generate a huge number of temporary raster files that could easily </span>
+<span class="sd">    exceed common SSD disk capacities.</span>
+
+<span class="sd">    Here we set up batches to limit the temporary disk space used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">raster_fname</span><span class="p">,</span> <span class="n">raster_crs</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">min_area</span><span class="p">,</span> <span class="n">temp_folder</span> <span class="o">=</span> <span class="nb">input</span>
+    <span class="n">raster_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">,</span> <span class="n">raster_fname</span><span class="p">)</span>
+    <span class="n">raster_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raster_fname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">polygon_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;temp_polygons_</span><span class="si">{</span><span class="n">raster_no</span><span class="si">:</span><span class="s1">05</span><span class="si">}</span><span class="s1">.shp&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># this function creates rasters of ordered </span>
+    <span class="c1"># sets of non-overlapping basins</span>
+    <span class="n">wbt</span><span class="o">.</span><span class="n">raster_to_vector_polygons</span><span class="p">(</span>
+        <span class="n">raster_path</span><span class="p">,</span>
+        <span class="n">polygon_path</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">polygon_path</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">raster_crs</span><span class="p">)</span>
+
+    <span class="c1"># simplify the polygon geometry to avoid self-intersecting polygons</span>
+    <span class="n">simplify_dim</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">resolution</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">simplify_dim</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">buffer_dim</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">gdf</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">buffer_dim</span><span class="p">)</span>
+    <span class="n">gdf</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">simplify_dim</span><span class="p">)</span>
+    <span class="n">gdf</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">buffer_dim</span><span class="p">)</span>
+    
+    <span class="n">gdf</span> <span class="o">=</span> <span class="n">filter_and_explode_geoms</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">min_area</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="p">(</span><span class="n">gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s1">&#39;Polygon&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        
+    <span class="n">gdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">gdf</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">polygon_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.shp&#39;</span><span class="p">,</span> <span class="s1">&#39;.geojson&#39;</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">gdf</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;Vancouver_Island&#39;</span>
+
+<span class="n">fdir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;data/DEM/</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_d8_pointer.tif&#39;</span><span class="p">)</span>
+
+<span class="c1"># get the file size in MB</span>
+<span class="n">filesize</span> <span class="o">=</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">fdir_path</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">20</span> <span class="p">)</span>
+
+<span class="n">temp_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;data/temp/&#39;</span><span class="p">)</span>        
+<span class="n">ppt_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;data/pour_points/&#39;</span><span class="p">)</span>
+<span class="n">basin_output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;data/basins/&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">basin_output_dir</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utilities</span> <span class="kn">import</span> <span class="p">(</span><span class="n">retrieve_raster</span><span class="p">,</span> <span class="n">redistribute_vertices</span><span class="p">,</span> <span class="n">match_ppt_to_polygons_by_order</span><span class="p">,</span>
+                        <span class="n">check_for_ppt_batches</span><span class="p">,</span> <span class="n">create_ppt_file_batches</span><span class="p">,</span> <span class="n">clean_up_temp_files</span><span class="p">,</span>
+                        <span class="n">filter_and_explode_geoms</span><span class="p">)</span>
+
+<span class="n">region_raster</span><span class="p">,</span> <span class="n">region_raster_crs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">fdir_path</span><span class="p">)</span>
+<span class="n">raster_resolution</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">region_raster</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">resolution</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1"> raster crs = </span><span class="si">{</span><span class="n">region_raster_crs</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+
+<span class="c1"># Break the pour points into unique sets</span>
+<span class="c1"># to avoid duplicate delineations</span>
+<span class="n">ppt_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ppt_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_pour_points.geojson&#39;</span><span class="p">)</span>
+
+<span class="n">ppt_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">ppt_file</span><span class="p">)</span>
+<span class="n">ppt_crs</span> <span class="o">=</span> <span class="n">ppt_gdf</span><span class="o">.</span><span class="n">crs</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    ppt crs = </span><span class="si">{</span><span class="n">ppt_crs</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># check that all pour point cell indices are unique</span>
+<span class="n">ppt_gdf</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span>
+    <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cell_idx&#39;</span><span class="p">],</span> 
+    <span class="n">keep</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># check for an output file to allow for partial updating</span>
+<span class="c1"># by tracking (unique) ppt indices</span>
+<span class="n">output_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;data/basins/</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_basins.geojson&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># check if the ppt batches have already been created</span>
+<span class="n">batch_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s1">&#39;ppt_batches/&#39;</span><span class="p">)</span>
+<span class="n">batches_exist</span> <span class="o">=</span> <span class="n">check_for_ppt_batches</span><span class="p">(</span><span class="n">batch_dir</span><span class="p">)</span>
+
+<span class="c1"># break the pour point dataframe into batches to limit the RAM used in </span>
+<span class="c1"># processing basins for each pour point.</span>
+<span class="n">temp_ppt_filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">batch_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;pts.shp&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">batches_exist</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    Generating new batch paths.&#39;</span><span class="p">)</span>
+    <span class="n">batch_ppt_paths</span> <span class="o">=</span> <span class="n">create_ppt_file_batches</span><span class="p">(</span><span class="n">ppt_gdf</span><span class="p">,</span> <span class="n">filesize</span><span class="p">,</span> <span class="n">temp_ppt_filepath</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    Retrieving existing batch paths.&#39;</span><span class="p">)</span>
+    <span class="n">batch_ppt_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">([</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">batch_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.shp&#39;</span><span class="p">)]))</span>
+    <span class="n">batch_ppt_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">batch_dir</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">batch_ppt_files</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_batch_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_ppt_paths</span><span class="p">)</span>
+<span class="n">batch_output_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">basin_output_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">output_fpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])])</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_output_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">batch_matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.geojson&#39;</span><span class="p">,</span> <span class="s1">&#39;.shp&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">batch_output_files</span><span class="p">]</span>
+    <span class="n">batch_ppt_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">([</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">batch_ppt_paths</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">batch_matches</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">basin_output_files</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">min_basin_area</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># km^2</span>
+<span class="k">for</span> <span class="n">ppt_batch_path</span> <span class="ow">in</span> <span class="n">batch_ppt_paths</span><span class="p">:</span>
+    <span class="n">t_batch_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">batch_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ppt_batch_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  Starting processing </span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1"> batch </span><span class="si">{</span><span class="n">batch_no</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">n_batch_files</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">temp_fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;temp_raster.tif&#39;</span>
+    <span class="n">temp_basin_raster_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">temp_fname</span><span class="p">)</span>            
+    <span class="n">batch_output_fpath</span> <span class="o">=</span> <span class="n">output_fpath</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.geojson&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">batch_no</span><span class="si">:</span><span class="s1">04d</span><span class="si">}</span><span class="s1">.geojson&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># creates the minimum set of rasters with non-overlapping polygons</span>
+    <span class="n">wbt</span><span class="o">.</span><span class="n">unnest_basins</span><span class="p">(</span>
+        <span class="n">fdir_path</span><span class="p">,</span> 
+        <span class="n">ppt_batch_path</span><span class="p">,</span> 
+        <span class="n">temp_basin_raster_path</span><span class="p">,</span>
+        <span class="n">esri_pntr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+        <span class="c1"># callback=default_callback</span>
+    <span class="p">)</span>
+    
+    <span class="n">batch_rasters</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">))</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.tif&#39;</span><span class="p">)])</span>
+
+    <span class="c1"># retrieve the batch pour point as a dataframe</span>
+    <span class="n">ppt_batch</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">ppt_batch_path</span><span class="p">)</span>
+
+    <span class="n">tb1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    Basins delineated for </span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1"> ppt batch </span><span class="si">{</span><span class="n">batch_no</span><span class="si">}</span><span class="s1"> in </span><span class="si">{</span><span class="p">(</span><span class="n">tb1</span><span class="o">-</span><span class="n">t_batch_start</span><span class="p">)</span><span class="o">/</span><span class="mi">60</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">min. </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">)</span><span class="si">}</span><span class="s1"> raster sub-batches to process (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ppt_batch</span><span class="p">)</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+
+    <span class="c1"># process the raster batches in parallel</span>
+    <span class="n">crs_array</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;EPSG:3005&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">)</span>
+    <span class="c1"># min_A_array = [min_basin_area] * len(batch_raster_fpaths)</span>
+    <span class="n">resolution_array</span> <span class="o">=</span> <span class="p">[</span><span class="n">raster_resolution</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">)</span>
+    <span class="n">temp_folder_array</span> <span class="o">=</span> <span class="p">[</span><span class="n">temp_dir</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">)</span>
+    <span class="n">min_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">min_basin_area</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">)</span>
+    <span class="n">path_inputs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">,</span> <span class="n">crs_array</span><span class="p">,</span> <span class="n">resolution_array</span><span class="p">,</span> <span class="n">min_areas</span><span class="p">,</span> <span class="n">temp_folder_array</span><span class="p">))</span>
+    
+    <span class="n">batch_size_GB</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">)</span> <span class="o">*</span> <span class="n">filesize</span> <span class="o">/</span> <span class="mf">1E3</span>
+    
+    <span class="c1"># Each processor core will load and process a full size DEM, and</span>
+    <span class="c1"># total ram usage can be multiples of the raster file size for each process. </span>
+    <span class="c1"># You need to balance the number of cores with RAM usage.</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;     Estimated batch size = </span><span class="si">{</span><span class="n">batch_size_GB</span><span class="si">}</span><span class="s1"> GB&#39;</span><span class="p">)</span>
+    <span class="n">n_procs</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    Setting n_procs=</span><span class="si">{</span><span class="n">n_procs</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1"> For a batch size of </span><span class="si">{</span><span class="n">batch_size_GB</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">GB&#39;</span><span class="p">)</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">n_procs</span><span class="p">)</span>
+    <span class="n">trv0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">all_polygons</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">raster_to_vector_basins_batch</span><span class="p">,</span> <span class="n">path_inputs</span><span class="p">)</span>
+    <span class="n">trv1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">trv1</span><span class="o">-</span><span class="n">trv0</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">s to convert </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">path_inputs</span><span class="p">)</span><span class="si">}</span><span class="s1"> rasters to vector basins.&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># concatenate polygons</span>
+    <span class="n">trc0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">batch_polygons</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">all_polygons</span><span class="p">),</span> <span class="n">crs</span><span class="o">=</span><span class="n">region_raster_crs</span><span class="p">)</span>
+    
+    <span class="c1"># sort by VALUE to maintain ordering from ppt batching / raster basin unnesting operation</span>
+    <span class="n">batch_polygons</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;VALUE&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">batch_polygons</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">batch_polygons</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">batch_output_fpath</span><span class="p">)</span>
+    <span class="n">trc1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">trc1</span><span class="o">-</span><span class="n">trc0</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">s to concatenate basin vector polygons.&#39;</span><span class="p">)</span>
+
+    <span class="n">basin_output_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch_output_fpath</span><span class="p">)</span>
+    
+    
+    <span class="c1"># remove all temporary files (don&#39;t delete the raster batches yet!)</span>
+    <span class="n">clean_up_temp_files</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">batch_rasters</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="concatenate-batch-polygon-files-into-a-single-geopackage-optional">
+<h2>Concatenate Batch Polygon Files into a single Geopackage (optional)<a class="headerlink" href="#concatenate-batch-polygon-files-into-a-single-geopackage-optional" title="Permalink to this heading">#</a></h2>
+<p>You can work with the output geojson files directly (smaller files), or concatenat them and convert to other useful formats like <a class="reference external" href="https://mapscaping.com/understanding-geopackage/#:~:text=Versatility%3A%20GeoPackage%20can%20store%20multiple,spatial%20queries%20and%20data%20visualization.">Geopackage</a> or <a class="reference external" href="https://getindata.com/blog/introducing-geoparquet-data-format/">Parquet</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">basin_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">basin_output_files</span><span class="p">)))</span>
+
+<span class="n">batch_dfs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">basin_files</span><span class="p">:</span>
+    <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+    <span class="n">layer</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+    <span class="n">batch_dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+    
+<span class="n">all_data</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">batch_dfs</span><span class="p">),</span> <span class="n">crs</span><span class="o">=</span><span class="n">layer</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
+<span class="n">all_data</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">output_fpath</span><span class="p">)</span>
+<span class="n">all_data</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span>
+    <span class="n">output_fpath</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.geojson&#39;</span><span class="p">,</span> <span class="s1">&#39;.gpkg&#39;</span><span class="p">),</span> 
+    <span class="n">driver</span><span class="o">=</span><span class="s1">&#39;GPKG&#39;</span><span class="p">,</span> 
+    <span class="n">layer</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;pour_points&#39;</span><span class="p">)</span>
+    
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">files</span><span class="p">)):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+<span class="n">t_n</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">n_processed_basins</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_processed_basins</span><span class="p">)</span>
+<span class="n">ut</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_n</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_processed_basins</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total processing time for </span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">t_n</span><span class="o">-</span><span class="n">t0</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">s (</span><span class="si">{</span><span class="n">ut</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">/basin).&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="3_Pour_Point_Extraction.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">3. Pour Point Extraction</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="5_Attribute_Extraction.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">5. Basin Attribute Extraction</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concatenate-batch-polygon-files-into-a-single-geopackage-optional">Concatenate Batch Polygon Files into a single Geopackage (optional)</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Dan Kovacek
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

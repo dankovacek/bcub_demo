@@ -1,0 +1,1106 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>3. Pour Point Extraction &#8212; British Columbia Ungauged Basin Dataset</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/3_Pour_Point_Extraction';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4. Basin Delineation" href="4_Basin_Delineation.html" />
+    <link rel="prev" title="2. Digital Elevation Preprocessing" href="2_DEM_Preprocessing.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../0_intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/bcub-logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/bcub-logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../0_intro.html">
+                    BC Ungauged Basin Database (BCUB)
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_Getting_Started.html">1. Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_DEM_Preprocessing.html">2. Digital Elevation Preprocessing</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">3. Pour Point Extraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_Basin_Delineation.html">4. Basin Delineation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_Attribute_Extraction.html">5. Basin Attribute Extraction</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/dankovacek/bcub" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/dankovacek/bcub/issues/new?title=Issue%20on%20page%20%2Fnotebooks/3_Pour_Point_Extraction.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/3_Pour_Point_Extraction.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>3. Pour Point Extraction</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-rasters-flow-direction-accumulation-stream-network">Import rasters (flow direction, accumulation, stream network)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-confluence-points-in-the-stream-network">Define confluence points in the stream network</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#filter-spurious-confluences">Filter spurious confluences</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#get-the-water-body-geometries-that-contain-confluence-points">Get the water body geometries that contain confluence points</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#find-and-add-lake-inflows">Find and add lake inflows</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="pour-point-extraction">
+<h1>3. Pour Point Extraction<a class="headerlink" href="#pour-point-extraction" title="Permalink to this heading">#</a></h1>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/pour_points.png"><img alt="../_images/pour_points.png" src="../_images/pour_points.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 4 </span><span class="caption-text">In this notebook, we will derive a set of pour points describing confluences that will be used to derive basins and extract basin attributes.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>In this notebook, we’ll use the stream network generated in the previous notebook to find all river confluences.   A set of input pour points are required for basin delineation in the next notebook.</p>
+<p>The set of confluences will be filtered using the <a class="reference external" href="https://natural-resources.canada.ca/science-and-data/science-and-research/earth-sciences/geography/topographic-information/geobase-surface-water-program-geeau/national-hydrographic-network/21361">National Hydrographic Network</a> waterbodies geometry to remove spurious confluences within lakes.</p>
+<p>The remaining points will serve as pour points for basin delineation.</p>
+<p>The following files were pre-processed for the purpose of demonstration since the <a class="reference external" href="https://ftp.maps.canada.ca/pub/nrcan_rncan/vector/geobase_nhn_rhn/gpkg_en/CA/">original files cover all of Canada and are as a result very large</a>.  The files below (may) need to be downloaded and saved to <code class="docutils literal notranslate"><span class="pre">content/notebooks/data/region_polygons/</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Vancouver_Island.geojson</span></code>: this is the polygon describing Vancouver Island.  It was used to do a spatial intersection on the NHN geometry to select just the waterbody geometries on Vancouver Island.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Vancouver_Island_lakes.geojson</span></code>: the water bodies polygon set for Vancouver Island.</p></li>
+</ul>
+<p>The steps in this notebook produce a set of river confluences, with spurious points within lakes filtered out.  The example below shows green points (confluences) and spurious lake points removed (shown yellow for illustration).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that the stream network in the image above appears discontinuous due to the screen resolution.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">utilities</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c1"># open the stream layer</span>
+<span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+<span class="n">dem_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;notebooks/data/DEM/&#39;</span><span class="p">)</span>
+<span class="n">base_dir</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;/home/danbot/Documents/code/23/bcub/content&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For clarity, some functions have been relegated to a separate file.  To find more detail, see <code class="docutils literal notranslate"><span class="pre">utilities.py</span></code>.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the folder where the pour point geometry information will be saved.</span>
+<span class="n">pour_pt_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;notebooks/data/pour_points/&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pour_pt_path</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">pour_pt_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="import-rasters-flow-direction-accumulation-stream-network">
+<h2>Import rasters (flow direction, accumulation, stream network)<a class="headerlink" href="#import-rasters-flow-direction-accumulation-stream-network" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># open the streams dem</span>
+<span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;Vancouver_Island&#39;</span>
+<span class="n">d8_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dem_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_d8_pointer.tif&#39;</span><span class="p">)</span>
+<span class="n">acc_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dem_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_acc.tif&#39;</span><span class="p">)</span>
+<span class="n">stream_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dem_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_streams.tif&#39;</span><span class="p">)</span>
+
+<span class="n">stream_raster</span><span class="p">,</span> <span class="n">stream_crs</span><span class="p">,</span> <span class="n">affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">stream_path</span><span class="p">)</span>
+<span class="n">resolution</span> <span class="o">=</span> <span class="n">stream_raster</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">resolution</span><span class="p">()</span>
+<span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">resolution</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Raster resolution is </span><span class="si">{</span><span class="n">dx</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1">x</span><span class="si">{</span><span class="n">dy</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1">m&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Raster resolution is 22x22m
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here we’ll set a minimum threshold of 5 <span class="math notranslate nohighlight">\(km^2\)</span> to limit the number of confluences for the sake of this demonstration.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">min_basin_area</span> <span class="o">=</span> <span class="mi">5</span> <span class="c1"># km^2</span>
+<span class="c1"># min number of cells comprising a basin</span>
+<span class="n">basin_threshold</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">min_basin_area</span> <span class="o">*</span> <span class="mf">1E6</span> <span class="o">/</span> <span class="p">(</span><span class="n">dx</span> <span class="o">*</span> <span class="n">dy</span><span class="p">))</span> 
+<span class="n">basin_threshold</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10103
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">rt0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">stream</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">stream_path</span><span class="p">)</span>
+<span class="n">fdir</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">d8_path</span><span class="p">)</span>
+<span class="n">acc</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">acc_path</span><span class="p">)</span>
+
+<span class="c1"># get raster data in matrix form</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">F</span> <span class="o">=</span> <span class="n">fdir</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">acc</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">rt1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;   ...time to load resources: </span><span class="si">{</span><span class="n">rt1</span><span class="o">-</span><span class="n">rt0</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">s.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   ...time to load resources: 8.5s.
+</pre></div>
+</div>
+</div>
+</div>
+<p>Create a list of coordinates representing all the stream cells.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get all the stream pixel indices</span>
+<span class="n">stream_px</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">S</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="define-confluence-points-in-the-stream-network">
+<h2>Define confluence points in the stream network<a class="headerlink" href="#define-confluence-points-in-the-stream-network" title="Permalink to this heading">#</a></h2>
+<p>Below we create a dictionary of potential pour points corresponding to confluences.</p>
+<p>We iterate through all the stream pixels, retrieve a 3x3 window of flow direction raster around each one, and check if it has more than one stream cell pointing towards it.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ppts</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">nn</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">stream_px</span><span class="p">:</span>
+    <span class="n">c_idx</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">if</span> <span class="n">c_idx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ppts</span><span class="p">:</span>
+        <span class="n">ppts</span><span class="p">[</span><span class="n">c_idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">ppt</span> <span class="o">=</span> <span class="n">ppts</span><span class="p">[</span><span class="n">c_idx</span><span class="p">]</span>
+
+    <span class="c1"># Add river outlets, as these are by definition</span>
+    <span class="c1"># confluences and especially prevalent in coastal regions</span>
+    <span class="n">focus_cell_acc</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+    <span class="n">focus_cell_dir</span> <span class="o">=</span> <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+
+    <span class="n">ppt</span><span class="p">[</span><span class="s1">&#39;acc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">focus_cell_acc</span>
+
+    <span class="k">if</span> <span class="n">focus_cell_dir</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># the focus cell is already defined as a stream cell</span>
+        <span class="c1"># so if its direction value is nan or 0, </span>
+        <span class="c1"># there is no flow direction and it&#39;s an outlet cell.</span>
+        <span class="n">ppt</span><span class="p">[</span><span class="s1">&#39;OUTLET&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># by definition an outlet cell is also a confluence</span>
+        <span class="n">ppt</span><span class="p">[</span><span class="s1">&#39;CONF&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ppt</span><span class="p">[</span><span class="s1">&#39;OUTLET&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># get the 3x3 boolean matrix of stream and d8 pointer </span>
+    <span class="c1"># cells centred on the focus cell</span>
+    <span class="n">S_w</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">F_w</span> <span class="o">=</span> <span class="n">F</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    
+    <span class="c1"># create a boolean matrix for cells that flow into the focal cell</span>
+    <span class="n">F_m</span> <span class="o">=</span> <span class="n">mask_flow_direction</span><span class="p">(</span><span class="n">S_w</span><span class="p">,</span> <span class="n">F_w</span><span class="p">)</span>
+    
+    <span class="c1"># check if cell is a stream confluence</span>
+    <span class="c1"># set the target cell to false by default</span>
+    <span class="n">ppts</span> <span class="o">=</span> <span class="n">check_for_confluence</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">ppts</span><span class="p">,</span> <span class="n">S_w</span><span class="p">,</span> <span class="n">F_m</span><span class="p">)</span>    
+</pre></div>
+</div>
+</div>
+</div>
+<p>Convert the dictionary of stream confluences to a geodataframe in the same CRS as our raster.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+
+<span class="n">output_ppt_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pour_pt_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_ppts.geojson&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_ppt_path</span><span class="p">):</span>
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">ppt_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">ppts</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+    <span class="n">ppt_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;cell_idx&#39;</span>
+    <span class="n">ppt_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+    
+    <span class="c1"># split the cell indices into columns and convert str--&gt;int</span>
+    <span class="n">ppt_df</span><span class="p">[</span><span class="s1">&#39;ix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">ppt_df</span><span class="p">[</span><span class="s1">&#39;cell_idx&#39;</span><span class="p">]]</span>
+    <span class="n">ppt_df</span><span class="p">[</span><span class="s1">&#39;jx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">ppt_df</span><span class="p">[</span><span class="s1">&#39;cell_idx&#39;</span><span class="p">]]</span>
+    
+    <span class="c1"># filter for stream points that are an outlet or a confluence</span>
+    <span class="n">ppt_df</span> <span class="o">=</span> <span class="n">ppt_df</span><span class="p">[(</span><span class="n">ppt_df</span><span class="p">[</span><span class="s1">&#39;OUTLET&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">ppt_df</span><span class="p">[</span><span class="s1">&#39;CONF&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ppt_df</span><span class="p">)</span><span class="si">}</span><span class="s1"> confluences and outlets combined in the </span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1"> region.&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">ppt_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">output_ppt_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> There are 22560 confluences and outlets combined in the Vancouver_Island region.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_pts_tot</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream_px</span><span class="p">)</span>
+<span class="n">n_pts_conf</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ppt_df</span><span class="p">[</span><span class="n">ppt_df</span><span class="p">[</span><span class="s1">&#39;CONF&#39;</span><span class="p">]])</span>
+<span class="n">n_pts_outlet</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ppt_df</span><span class="p">[</span><span class="n">ppt_df</span><span class="p">[</span><span class="s1">&#39;OUTLET&#39;</span><span class="p">]])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Of </span><span class="si">{</span><span class="n">n_pts_tot</span><span class="si">}</span><span class="s1"> total stream cells:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">n_pts_conf</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">n_pts_outlet</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="mi">100</span><span class="o">*</span><span class="n">n_pts_conf</span><span class="o">/</span><span class="n">n_pts_tot</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">%) are stream confluences,&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">n_pts_outlet</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="mi">100</span><span class="o">*</span><span class="n">n_pts_outlet</span><span class="o">/</span><span class="n">n_pts_tot</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">%) are stream outlets.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Of 934567 total stream cells:
+    21044 (2.4%) are stream confluences,
+    1516 (0.2%) are stream outlets.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The pour points are thus far only described by the raster pixel index, we still need to apply a transform to map indices to projected coordinates.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ppt_gdf</span> <span class="o">=</span> <span class="n">create_pour_point_gdf</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">ppt_df</span><span class="p">,</span> <span class="n">stream_crs</span><span class="p">,</span> <span class="n">output_ppt_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>creating 100 chunks for processing
+    ...10/100 chunks processed in 0.0s
+    ...20/100 chunks processed in 0.1s
+    ...30/100 chunks processed in 0.1s
+    ...40/100 chunks processed in 0.2s
+    ...50/100 chunks processed in 0.2s
+    ...60/100 chunks processed in 0.2s
+    ...70/100 chunks processed in 0.3s
+    ...80/100 chunks processed in 0.3s
+    ...90/100 chunks processed in 0.3s
+    ...100/100 chunks processed in 0.4s
+    22560 pour points created.
+   ...ppts geodataframe processed in0.4s
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ta = time.time()</span>
+<span class="c1"># polygon_path = os.path.join(base_dir, f&#39;notebooks/data/region_polygons/{region}.geojson&#39;)</span>
+<span class="c1"># region_polygon = gpd.read_file(polygon_path)</span>
+<span class="c1"># # reproject to match nhn crs</span>
+<span class="c1"># # region_polygon = region_polygon.to_crs(4617)</span>
+<span class="c1"># tb = time.time()</span>
+<span class="c1"># print(f&#39;   ...region polygon opened in {tb-ta:.2f}s&#39;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="filter-spurious-confluences">
+<h2>Filter spurious confluences<a class="headerlink" href="#filter-spurious-confluences" title="Permalink to this heading">#</a></h2>
+<p>One vestige of the stream network derivation is that it does not identify lakes.  There are lots of lakes on Vancouver Island, and we want to remove the spurious confluence points that fall within lakes and find locations where rivers flow into lakes.  We can do this with hydrographic information from the <a class="reference external" href="https://natural-resources.canada.ca/science-and-data/science-and-research/earth-sciences/geography/topographic-information/geobase-surface-water-program-geeau/national-hydrographic-network/21361">National Hydrographic Netowork</a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Lake polygons for Vancouver Island are saved under <code class="docutils literal notranslate"><span class="pre">content/notebooks/data/region_polygons/Vancouver_Island_lakes.geojson</span></code></p>
+</div>
+<section id="get-the-water-body-geometries-that-contain-confluence-points">
+<h3>Get the water body geometries that contain confluence points<a class="headerlink" href="#get-the-water-body-geometries-that-contain-confluence-points" title="Permalink to this heading">#</a></h3>
+<p>From the <a class="reference external" href="https://ftp.maps.canada.ca/pub/nrcan_rncan/vector/geobase_nhn_rhn/doc/GeoBase_nhn_en_Catalogue_1_2.pdf">NHN documentation</a>:</p>
+<p>Permanency code:</p>
+<ul class="simple">
+<li><p>-1 unknown</p></li>
+<li><p>0 no value available</p></li>
+<li><p>1 permanent</p></li>
+<li><p>2 intermittent</p></li>
+</ul>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>water_definition</p></th>
+<th class="head"><p>Label</p></th>
+<th class="head"><p>Code Definition</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>None</p></td>
+<td><p>0</p></td>
+<td><p>No Waterbody Type value available.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Canal</p></td>
+<td><p>1</p></td>
+<td><p>An artificial watercourse serving as a navigable waterway or to channel water.</p></td>
+</tr>
+<tr class="row-even"><td><p>Conduit</p></td>
+<td><p>2</p></td>
+<td><p>An artificial system, such as an Aqueduct, Penstock, Flume, or Sluice, designed to carry water for purposes other than drainage.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ditch</p></td>
+<td><p>3</p></td>
+<td><p>Small, open manmade channel constructed through earth or rock for the purpose of conveying water.</p></td>
+</tr>
+<tr class="row-even"><td><p>*Lake</p></td>
+<td><p>4</p></td>
+<td><p>An inland body of water of considerable area.</p></td>
+</tr>
+<tr class="row-odd"><td><p>*Reservoir</p></td>
+<td><p>5</p></td>
+<td><p>A wholly or partially manmade feature for storing and/or regulating and controlling water.</p></td>
+</tr>
+<tr class="row-even"><td><p>Watercourse</p></td>
+<td><p>6</p></td>
+<td><p>A channel on or below the earth’s surface through which water may flow.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tidal River</p></td>
+<td><p>7</p></td>
+<td><p>A river in which flow and water surface elevation are affected by the tides.</p></td>
+</tr>
+<tr class="row-even"><td><p>*Liquid Waste</p></td>
+<td><p>8</p></td>
+<td><p>Liquid waste from an industrial complex.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The label “10” also exists, though I have not found a corresponding definition.  From the image below, it appears they may represent seasonal channels.  Light blue regions are lakes (4) and watercourses (6).</p>
+</div>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../_images/label_10.png"><img alt="../_images/label_10.png" src="../_images/label_10.png" style="width: 400px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 5 </span><span class="caption-text">Darker grey polygons are labeled with the code “10” appear to be seasonal channels.</span><a class="headerlink" href="#id2" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># read the pre-processed lakes polygon file</span>
+<span class="n">region_lakes_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;notebooks/data/region_polygons/</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_lakes.geojson&#39;</span><span class="p">)</span>
+<span class="n">lakes_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">region_lakes_path</span><span class="p">)</span>
+<span class="n">lakes_df</span> <span class="o">=</span> <span class="n">lakes_df</span><span class="p">[[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">lakes_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;index_right&#39;</span><span class="p">,</span> <span class="s1">&#39;index_left&#39;</span><span class="p">]]]</span>
+<span class="k">assert</span> <span class="n">lakes_df</span><span class="o">.</span><span class="n">crs</span> <span class="o">==</span> <span class="n">ppt_gdf</span><span class="o">.</span><span class="n">crs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Here we apply some subjective criteria to improve the performance of the lake inflow point discovery:</p>
+<ol class="arabic simple">
+<li><p>We remove lakes smaller than 0.01 <span class="math notranslate nohighlight">\(km^2\)</span> to speed up the spatial join.</p></li>
+<li><p>We only look at lakes that contain confluence points in order to relocate points to river mouths.</p></li>
+<li><p>We apply a small buffer and simplify (or smooth) each water body polygon – this is to reduce the number of river mouth points identified in heavily braided lake headwaters.</p></li>
+<li><p>Check that points identified as river mouths aren’t in too close proximity (within 4 pixels).</p></li>
+<li><p>Rasterize the lake polygons in order to find the nearest stream pixel crossing the line – if we interpolate too few points, we miss the intersecting point.  When changing these parameters, consider that the simplification eliminates vertices defining the polygon, so you must interpolate the line with enough points to find a stream pixel at the intersection.</p></li>
+</ol>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># remove lakes &lt; 0.01 km^2</span>
+<span class="n">lakes_df</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lakes_df</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">area</span>
+<span class="n">lakes_df</span> <span class="o">=</span> <span class="n">lakes_df</span><span class="p">[</span><span class="n">lakes_df</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">10000</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Filter out points within water bodies.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># filter for water_definition code (see code table above)</span>
+<span class="c1"># filter out all confluence points in lakes and reservoirs</span>
+<span class="n">lakes_filter</span> <span class="o">=</span> <span class="p">(</span><span class="n">lakes_df</span><span class="p">[</span><span class="s1">&#39;water_definition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">lakes_df</span><span class="p">[</span><span class="s1">&#39;water_definition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span><span class="p">)</span> 
+<span class="n">lakes_df</span> <span class="o">=</span> <span class="n">lakes_df</span><span class="p">[</span><span class="n">lakes_filter</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># intersect the pour point and filtered lake geometries</span>
+<span class="n">lake_ppts</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">sjoin</span><span class="p">(</span><span class="n">ppt_gdf</span><span class="p">,</span> <span class="n">lakes_df</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="s1">&#39;within&#39;</span><span class="p">)</span>
+<span class="n">filtered_ppts</span> <span class="o">=</span> <span class="n">lake_ppts</span><span class="p">[</span><span class="n">lake_ppts</span><span class="p">[</span><span class="s1">&#39;index_right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_ppts</span><span class="p">)</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ppt_gdf</span><span class="p">)</span><span class="si">}</span><span class="s1"> confluence points are not in lakes (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ppt_gdf</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_ppts</span><span class="p">)</span><span class="si">}</span><span class="s1"> points removed).&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    19184/22560 confluence points are not in lakes (3376 points removed).
+</pre></div>
+</div>
+</div>
+</div>
+<p>Find all water body polygons that contain at least one confluence point.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># find the set of lakes that contain points</span>
+<span class="n">lakes_with_pts</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">sjoin</span><span class="p">(</span><span class="n">lakes_df</span><span class="p">,</span> <span class="n">ppt_gdf</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="s1">&#39;intersects&#39;</span><span class="p">)</span>
+
+<span class="c1"># the rows with index_right == nan are lake polygons containing no points</span>
+<span class="n">filtered_lakes</span> <span class="o">=</span> <span class="n">lakes_with_pts</span><span class="p">[</span><span class="o">~</span><span class="n">lakes_with_pts</span><span class="p">[</span><span class="s1">&#39;index_right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="c1"># # get the set of all unique lake ids</span>
+<span class="n">lake_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">filtered_lakes</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]))</span>
+<span class="n">filtered_lakes</span> <span class="o">=</span> <span class="n">lakes_df</span><span class="p">[</span><span class="n">lakes_df</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">lake_ids</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># # merge contiguous (adjacent) polygons </span>
+<span class="n">filtered_lakes</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">filtered_lakes</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">unary_union</span><span class="p">],</span> <span class="n">crs</span><span class="o">=</span><span class="s1">&#39;EPSG:3005&#39;</span><span class="p">)</span>
+<span class="n">filtered_lakes</span> <span class="o">=</span> <span class="n">filtered_lakes</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="n">index_parts</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_lakes</span><span class="p">)</span><span class="si">}</span><span class="s1"> unique lake geometries that contain confluence points found in the </span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1"> waterbodies layer&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  There are 311 unique lake geometries that contain confluence points found in the Vancouver_Island waterbodies layer
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="find-and-add-lake-inflows">
+<h3>Find and add lake inflows<a class="headerlink" href="#find-and-add-lake-inflows" title="Permalink to this heading">#</a></h3>
+<p>We’ll only check lakes that have spurious confluences, the general idea is we shift the in-lake confluence to the inflow location.  The method works best for large lake polygons and relatively smooth geometries where the stream network and NHN features align well, but it adds unnecessary points in other locations.  A few examples of good and bad behaviour are shown below.</p>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="../_images/lake_points_removed.png"><img alt="../_images/lake_points_removed.png" src="../_images/lake_points_removed.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 6 </span><span class="caption-text">Confluence points within lakes have been removed, while river mouths have been added.</span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="../_images/problem_points.png"><img alt="../_images/problem_points.png" src="../_images/problem_points.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 7 </span><span class="caption-text">Complex lake polygons and derived stream network disagreement result in points being added in unintentional locations.</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The geometric manipulations below can be modified to address specific use cases.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">shapely.ops</span> <span class="kn">import</span> <span class="n">unary_union</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">tot_pts</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">tb</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">resolution</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">acc</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">resolution</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">min_acc_cells</span> <span class="o">=</span> <span class="mf">1E6</span> <span class="o">/</span> <span class="p">(</span><span class="n">resolution</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># simplify the lake geometry to </span>
+<span class="n">points_to_check</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">filtered_lakes</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">50</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;   Processing lake group </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_lakes</span><span class="p">)</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">tot_pts</span><span class="si">}</span><span class="s1"> points so far...&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># give a slight buffer to the polygon and smooth it to address </span>
+    <span class="c1"># complex braided lake headwaters</span>
+    <span class="n">lake_geom</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">resolution</span><span class="p">)</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">resolution</span><span class="p">)</span>
+    <span class="c1"># we may have created multipolygons in the smoothing step, </span>
+    <span class="c1"># # below we keep the main polygon and drop the remainder</span>
+    <span class="c1"># if lake_geom.geom_type == &#39;MultiPolygon&#39;:</span>
+    <span class="c1">#     lake_geom = gpd.GeoDataFrame(geometry=[lake_geom], crs=&#39;EPSG:3005&#39;)</span>
+    <span class="c1">#     lake_geom = lake_geom.explode(index_parts=False)</span>
+    <span class="c1">#     lake_geom.reset_index(inplace=True, drop=True)</span>
+    <span class="c1">#     lake_geom[&#39;area_1&#39;] = lake_geom.area</span>
+    <span class="c1">#     lake_geom = lake_geom.loc[lake_geom[&#39;area_1&#39;].idxmax(), :].geometry    </span>
+    
+    <span class="c1"># if not lake_geom:</span>
+    <span class="c1">#     continue</span>
+    <span class="c1"># resample the shoreline vector to prevent missing confluence points</span>
+    <span class="n">resampled_shoreline</span> <span class="o">=</span> <span class="n">redistribute_vertices</span><span class="p">(</span><span class="n">lake_geom</span><span class="o">.</span><span class="n">exterior</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">xy</span>
+    
+    <span class="n">xs</span> <span class="o">=</span> <span class="n">resampled_shoreline</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">ys</span> <span class="o">=</span> <span class="n">resampled_shoreline</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="c1"># # find the closest point to within 1/2 pixel of the lake edge</span>
+    <span class="n">px_pts</span> <span class="o">=</span> <span class="n">acc</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">ys</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">resolution</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">latlon</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">px_pts</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">px_pts</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">values</span><span class="p">)))</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">latlon</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">continue</span>
+
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">latlon</span><span class="p">:</span>
+        <span class="n">acc_val</span> <span class="o">=</span> <span class="n">acc</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">acc_val</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">min_acc_cells</span><span class="p">):</span>
+            <span class="n">tot_pts</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">points_to_check</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)]</span>
+            
+        
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">points_to_check</span><span class="p">)</span><span class="si">}</span><span class="s1"> points identified as potential lake inflows&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   Processing lake group 50/311, 298 points so far...
+   Processing lake group 100/311, 582 points so far...
+   Processing lake group 150/311, 942 points so far...
+   Processing lake group 200/311, 1285 points so far...
+   Processing lake group 250/311, 1741 points so far...
+   Processing lake group 300/311, 2011 points so far...
+2078 points identified as potential lake inflows
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">all_pts</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">points_to_check</span><span class="p">:</span>
+    <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">250</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">points_to_check</span><span class="p">)</span><span class="si">}</span><span class="s1"> points checked.&#39;</span><span class="p">)</span>
+
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">resolution</span> <span class="o">=</span> <span class="n">inp</span>
+    <span class="n">pt</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    
+    <span class="c1"># index_right is the lake id the point is contained in</span>
+    <span class="c1"># don&#39;t let adjacent points both be pour points</span>
+    <span class="c1"># but avoid measuring distance to points within lakes</span>
+    <span class="n">pt_dists</span> <span class="o">=</span> <span class="n">filtered_ppts</span><span class="p">[</span><span class="n">filtered_ppts</span><span class="p">[</span><span class="s1">&#39;index_right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+
+    <span class="c1"># check the point is not within 5 cell widths of an existing point</span>
+    <span class="n">min_spacing</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">resolution</span>
+    <span class="n">dist_check</span> <span class="o">=</span> <span class="n">pt_dists</span> <span class="o">&lt;=</span> <span class="n">min_spacing</span>
+    
+    <span class="c1"># accum_check = accum &lt; 0.95 * max_acc</span>
+    <span class="n">accum_check</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">accum_check</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="n">dist_check</span><span class="p">):</span>
+        <span class="c1"># check if the potential point is in any of the lakes</span>
+        <span class="c1"># not_in_any_lake = sum([lg.contains(pt) for lg in lakes_df.geometry]) == 0</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">lakes_df</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">all_pts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>250/2078 points checked.
+500/2078 points checked.
+750/2078 points checked.
+1000/2078 points checked.
+1250/2078 points checked.
+1500/2078 points checked.
+1750/2078 points checked.
+2000/2078 points checked.
+</pre></div>
+</div>
+</div>
+</div>
+<p>Format the river mouth points into a geodataframe and append it to the filtered set.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rpts</span> <span class="o">=</span> <span class="n">filtered_ppts</span><span class="p">[[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">all_pts_filtered</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">all_pts</span><span class="p">:</span>
+    <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">200</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_pts</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">dists</span> <span class="o">=</span> <span class="n">rpts</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">dists</span> <span class="o">&gt;</span> <span class="n">min_spacing</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="n">ptg</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">pt</span><span class="p">],</span> <span class="n">crs</span><span class="o">=</span><span class="s1">&#39;EPSG:3005&#39;</span><span class="p">)</span>
+        <span class="c1"># append the new point to the reference point dataframe to</span>
+        <span class="c1"># update the set of points checked against.</span>
+        <span class="n">rpts</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">rpts</span><span class="p">,</span> <span class="n">ptg</span><span class="p">]),</span> <span class="n">crs</span><span class="o">=</span><span class="s1">&#39;EPSG:3005&#39;</span><span class="p">)</span>
+        <span class="n">all_pts_filtered</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span>
+                
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>200/1668
+400/1668
+600/1668
+800/1668
+1000/1668
+1200/1668
+1400/1668
+1600/1668
+</pre></div>
+</div>
+</div>
+</div>
+<p>Save the output</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_pts</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">all_pts_filtered</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;EPSG:</span><span class="si">{</span><span class="n">stream_crs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">pour_points</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">filtered_ppts</span><span class="p">,</span> <span class="n">new_pts</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">crs</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;EPSG:</span><span class="si">{</span><span class="n">stream_crs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">pour_points</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;notebooks/data/pour_points/</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_pour_points3.geojson&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="2_DEM_Preprocessing.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">2. Digital Elevation Preprocessing</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="4_Basin_Delineation.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">4. Basin Delineation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-rasters-flow-direction-accumulation-stream-network">Import rasters (flow direction, accumulation, stream network)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-confluence-points-in-the-stream-network">Define confluence points in the stream network</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#filter-spurious-confluences">Filter spurious confluences</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#get-the-water-body-geometries-that-contain-confluence-points">Get the water body geometries that contain confluence points</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#find-and-add-lake-inflows">Find and add lake inflows</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Dan Kovacek
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
