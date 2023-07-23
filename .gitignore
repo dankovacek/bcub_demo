@@ -1,0 +1,13 @@
+docs/notebooks/data/DEM/
+# docs/notebooks/data/region_polygons/
+docs/notebooks/data/region_polygons.zip
+docs/notebooks/data/geospatial_layers/
+docs/notebooks/data/basins/
+docs/_build/
+temp/
+
+.ipynb_checkpoints/
+
+*-draft.md
+__pycache__/
+

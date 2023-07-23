@@ -1,0 +1,10 @@
+content/notebooks/data/region_polygons/Vancouver_Island_lakes.geojson filter=lfs diff=lfs merge=lfs -text
+content/notebooks/data/region_polygons/Vancouver_Island.geojson filter=lfs diff=lfs merge=lfs -text
+docs/notebooks/data/geospatial_layers filter=lfs diff=lfs merge=lfs -text
+docs/notebooks/data/pour_points filter=lfs diff=lfs merge=lfs -text
+docs/notebooks/data/region_polygons filter=lfs diff=lfs merge=lfs -text
+docs/notebooks/data/region_polygons.zip filter=lfs diff=lfs merge=lfs -text
+docs/notebooks/data/temp filter=lfs diff=lfs merge=lfs -text
+docs/notebooks/data/basins filter=lfs diff=lfs merge=lfs -text
+docs/notebooks/data/DEM filter=lfs diff=lfs merge=lfs -text
+docs/notebooks/data/download_links.csv filter=lfs diff=lfs merge=lfs -text
