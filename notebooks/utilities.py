@@ -6,6 +6,7 @@ import pandas as pd
 import rioxarray as rxr
 from shapely.geometry import Point, LineString
 import geopandas as gpd
+import multiprocessing as mp
 
 
 def retrieve_raster(filename):
@@ -238,3 +239,49 @@ def match_ppt_to_polygons_by_order(ppt_batch, polygon_df, resolution):
     polygon_df.reset_index(inplace=True, drop=True)
 
     return polygon_df
+
+
+def interpolate_line(inputs):
+    geom, n, num_vertices = inputs
+    d = n / num_vertices
+    return (n, geom.interpolate(d, normalized=True))
+    
+
+def redistribute_vertices(geom, distance):
+    """Evenly resample along a linestring
+    See this SO post:
+    https://gis.stackexchange.com/a/367965/199640
+    
+    Args:
+        geom (polygon): lake boundary geometry
+        distance (numeric): distance between points in the modified linestring
+
+    Raises:
+        ValueError: _description_
+
+    Returns:
+        _type_: _description_
+    """
+
+    if geom.geom_type in ['LineString', 'LinearRing']:
+        num_vertices = int(round(geom.length / distance))
+        
+        if num_vertices == 0:
+            num_vertices = 1
+        # print(f'total distance = {geom.length:.0f} m, n_vertices = {num_vertices}')
+        inputs = [(geom, float(n), num_vertices) for n in range(num_vertices + 1)]
+        with mp.Pool() as pool:
+            results = pool.map(interpolate_line, inputs)
+        
+        df = pd.DataFrame(results, columns=['n', 'geometry'])
+        df = df.sort_values(by='n').reset_index(drop=True)
+        return LineString(df['geometry'].values)
+    
+    elif geom.geom_type == 'MultiLineString':
+        ls = gpd.GeoDataFrame(geometry=[geom], crs='EPSG:3005')
+        geoms = ls.explode().reset_index(drop=True).geometry.values
+        parts = [redistribute_vertices(part, distance)
+                 for part in geoms]
+        return type(geom)([p for p in parts if not p.is_empty])
+    else:
+        raise ValueError('unhandled geometry %s', (geom.geom_type,))

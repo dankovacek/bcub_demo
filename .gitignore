@@ -1,8 +1,12 @@
 notebooks/data/DEM/*
 # notebooks/data/region_polygons/
 notebooks/data/region_polygons.zip
+notebooks/data/region_polygons/*_4269.geojson
+notebooks/data/region_polygons/*_simplified.geojson
 notebooks/data/geospatial_layers/*
 notebooks/data/basins/*
+notebooks/data/pour_points/*
+notebooks/data/processed_dem/
 temp/
 
 .ipynb_checkpoints/
