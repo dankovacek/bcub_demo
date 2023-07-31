@@ -377,7 +377,7 @@ document.write(`
 <figure class="align-default" id="id5">
 <a class="reference internal image-reference" href="../_images/nalcms_VI.gif"><img alt="../_images/nalcms_VI.gif" src="../_images/nalcms_VI.gif" style="width: 600px;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 9 </span><span class="caption-text">North American Land Change Monitoring System <a href="#id1"><span class="problematic" id="id2">latifovic2010north</span></a> rasters covering Vancouver Island for 2010, 2015, and 2020.</span><a class="headerlink" href="#id5" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 11 </span><span class="caption-text">North American Land Change Monitoring System <a href="#id1"><span class="problematic" id="id2">latifovic2010north</span></a> rasters covering Vancouver Island for 2010, 2015, and 2020.</span><a class="headerlink" href="#id5" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
 <p>The final step is to capture geospatial information describing the soil, land cover, and terrain of each basin using the polygons we developed in the previous notebook.  First we need to get the data and trim it to the Vancouver Island polygon.</p>
@@ -407,14 +407,6 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># set the path to the downloaded NALCMS file</span>
 <span class="n">nalcms_fpath</span> <span class="o">=</span> <span class="c1"># path/to/nalcms_file</span>
 <span class="n">nalcms_raster</span><span class="p">,</span> <span class="n">nalcms_crs</span><span class="p">,</span> <span class="n">nalcms_affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">nalcms_fpath</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>  <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">48</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
-    <span class="n">nalcms_fpath</span> <span class="o">=</span> <span class="c1"># path/to/nalcms_file</span>
-                   <span class="o">^</span>
-<span class="ne">SyntaxError</span>: invalid syntax
 </pre></div>
 </div>
 </div>
@@ -477,7 +469,7 @@ document.write(`
 <figure class="align-default" id="id6">
 <a class="reference internal image-reference" href="../_images/perm_porosity.png"><img alt="../_images/perm_porosity.png" src="../_images/perm_porosity.png" style="width: 600px;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 10 </span><span class="caption-text">The GLobal HYdrogeology MaPS (GLHYMPS) <a href="#id3"><span class="problematic" id="id4">SP2_TTJNIU_2018</span></a> is global coverage of permeability and porosity in vector format.</span><a class="headerlink" href="#id6" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 12 </span><span class="caption-text">The GLobal HYdrogeology MaPS (GLHYMPS) <a href="#id3"><span class="problematic" id="id4">SP2_TTJNIU_2018</span></a> is global coverage of permeability and porosity in vector format.</span><a class="headerlink" href="#id6" title="Permalink to this image">#</a></p>
 <div class="legend">
 <p>Download the file from <a class="reference external" href="https://aquaknow.jrc.ec.europa.eu/en/content/global-hydrogeology-maps-glhymps-permeability-and-porosity">here</a>, and use the steps below to clip the data to the region of interest.</p>
 <p>Note that this file is large, and it’s necessary to use the <code class="docutils literal notranslate"><span class="pre">mask</span></code> feature when opening the file using geopandas. Expect the opening and masking to take several minutes.</p>
@@ -643,7 +635,7 @@ document.write(`
 </section>
 <section id="land-cover-data">
 <h2>Land Cover Data<a class="headerlink" href="#land-cover-data" title="Permalink to this heading">#</a></h2>
-<p>Below we use LULC to refer to “land use land cover”.</p>
+<p>Land use land cover (LULC) classes are grouped as in Arsenault (2020).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">attribute_functions</span> <span class="kn">import</span> <span class="n">clip_raster_to_basin</span>
@@ -881,35 +873,12 @@ document.write(`
 <span class="sd">    Returns:</span>
 <span class="sd">        slope, aspect: scalar mean values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># print(raster.data[0])</span>
-    <span class="c1"># print(raster.rio.crs)</span>
-    <span class="c1"># print(asfd)</span>
-    <span class="c1"># wkt = raster.rio.crs.to_wkt()</span>
-    <span class="c1"># affine = raster.rio.transform()</span>
 
     <span class="n">resolution</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">resolution</span><span class="p">()</span>
     <span class="n">raster_shape</span> <span class="o">=</span> <span class="n">raster</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
 
-<span class="c1">#     rdem_clipped = rd.rdarray(</span>
-<span class="c1">#         raster.data[0], </span>
-<span class="c1">#         no_data=raster.rio.nodata, </span>
-<span class="c1">#         projection=wkt, </span>
-<span class="c1">#     )</span>
-
-<span class="c1">#     rdem_clipped.geotransform = affine.to_gdal()</span>
-<span class="c1">#     rdem_clipped.projection = wkt</span>
-
-    <span class="c1"># # ts0 = time.time()</span>
-    <span class="c1"># use to check slope -- works out to within 1 degree...</span>
-    <span class="c1"># slope = rd.TerrainAttribute(rdem_clipped, attrib=&#39;slope_degrees&#39;)</span>
-    <span class="c1"># aspect_deg = rd.TerrainAttribute(rdem_clipped, attrib=&#39;aspect&#39;)</span>
-    <span class="c1"># # ts2 = time.time()</span>
-
     <span class="n">el_px</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
-    <span class="c1"># print(el_px[:2])</span>
-    <span class="c1"># print(rdem_clipped)</span>
-    <span class="c1"># print(asdfsd)</span>
     <span class="n">S</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="n">process_slope_and_aspect</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">el_px</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">raster_shape</span><span class="p">)</span>
 
     <span class="n">mean_slope_deg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
@@ -994,11 +963,6 @@ document.write(`
 <span class="c1"># save the file</span>
 <span class="n">output_fname</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.geojson&#39;</span><span class="p">,</span> <span class="s1">&#39;.csv&#39;</span><span class="p">)</span>
 <span class="n">output_file</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;notebooks/data/</span><span class="si">{</span><span class="n">output_fname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Processed 10 basins in 3s (0.30s/basin)
 </pre></div>
 </div>
 </div>
