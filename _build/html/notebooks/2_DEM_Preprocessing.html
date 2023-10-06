@@ -387,15 +387,11 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
 <span class="n">dem_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;notebooks/data/DEM/&#39;</span><span class="p">)</span>
+<span class="n">processed_dem_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;notebooks/data/processed_dem&#39;</span><span class="p">)</span>
 <span class="n">dem_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dem_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.tif&#39;</span><span class="p">)]</span>
 
 <span class="c1"># open a sample dem file and get the resolution and CRS</span>
-<span class="n">dem_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dem_dir</span><span class="p">,</span> <span class="n">dem_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">dem</span><span class="p">,</span> <span class="n">crs</span><span class="p">,</span> <span class="n">affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">dem_fpath</span><span class="p">)</span>
-
-<span class="n">dem_resolution</span> <span class="o">=</span> <span class="n">dem</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">resolution</span><span class="p">()</span>
-<span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">dem_resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="nb">int</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">dem_resolution</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DEM is </span><span class="si">{</span><span class="n">dx</span><span class="si">}</span><span class="s1">x</span><span class="si">{</span><span class="n">dy</span><span class="si">}</span><span class="s1">m resolution and is in EPSG </span><span class="si">{</span><span class="n">crs</span><span class="si">}</span><span class="s1"> CRS&#39;</span><span class="p">)</span>
+<span class="n">input_dem</span><span class="p">,</span> <span class="n">input_crs</span><span class="p">,</span> <span class="n">input_affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dem_dir</span><span class="p">,</span> <span class="n">dem_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 </pre></div>
 </div>
 </div>
@@ -403,15 +399,26 @@ document.write(`
 <section id="clip-the-dem">
 <h2>Clip the DEM<a class="headerlink" href="#clip-the-dem" title="Permalink to this heading">#</a></h2>
 <p>Let’s take the polygon describing Vancouver Island and use it to clip the DEM. We do this so we don’t end up computing the stream network on the ocean surrounding the island, and so that we can identify where rivers drain into the ocean.</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/VI_trimmed.png"><img alt="../_images/VI_trimmed.png" src="../_images/VI_trimmed.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">The raster is clipped to the Vancouver Island polygon.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
 
 <span class="n">mask_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;notebooks/data/region_polygons/Vancouver_Island.geojson&#39;</span><span class="p">)</span>
-<span class="n">output_dem_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;notebooks/data/DEM/Vancouver_Island_</span><span class="si">{</span><span class="n">crs</span><span class="si">}</span><span class="s1">.tif&#39;</span><span class="p">)</span>
-<span class="n">vrt_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;notebooks/data/DEM/USGS_3DEP_mosaic_4269.vrt&#39;</span><span class="p">)</span>
+<span class="n">output_dem_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_dem_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Vancouver_Island_</span><span class="si">{</span><span class="n">crs</span><span class="si">}</span><span class="s1">.tif&#39;</span><span class="p">)</span>
+<span class="n">vrt_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;notebooks/data/processed_dem/USGS_3DEP_mosaic_4269.vrt&#39;</span><span class="p">)</span>
 
 <span class="n">mask</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">mask_path</span><span class="p">)</span>
+<span class="c1"># ensure the mask and raster have the same projection</span>
+<span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">crs</span> <span class="o">!=</span> <span class="n">input_crs</span><span class="p">:</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">input_crs</span><span class="p">)</span>
+    <span class="n">mask_path</span> <span class="o">=</span> <span class="n">mask_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.geojson&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">input_crs</span><span class="si">}</span><span class="s1">.geojson&#39;</span><span class="p">)</span>
+    <span class="n">mask</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">mask_path</span><span class="p">)</span>
 <span class="n">gtype</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">geom_type</span>
 <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">is_valid</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;   ...mask is valid.&#39;</span><span class="p">)</span>
@@ -419,17 +426,10 @@ document.write(`
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">output_dem_path</span>
-</pre></div>
-</div>
-</div>
-</div>
 <p>The command below takes the Vancouver Island shoreline polygon and uses it to clip the virtual raster.  The function should take about a minute or so depending upon your system hardware.  Note the resulting file is roughly 1GB, and for the various DEM processing steps you may need up to 1X that in RAM.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;gdalwarp -s_srs epsg:</span><span class="si">{</span><span class="n">crs</span><span class="si">}</span><span class="s1"> -cutline </span><span class="si">{</span><span class="n">mask_path</span><span class="si">}</span><span class="s1"> -cl Vancouver_Island -crop_to_cutline -multi -of gtiff </span><span class="si">{</span><span class="n">vrt_path</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">output_dem_path</span><span class="si">}</span><span class="s1"> -wo NUM_THREADS=ALL_CPUS&#39;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;gdalwarp -s_srs epsg:</span><span class="si">{</span><span class="n">input_crs</span><span class="si">}</span><span class="s1"> -cutline </span><span class="si">{</span><span class="n">mask_path</span><span class="si">}</span><span class="s1"> -crop_to_cutline -multi -of gtiff </span><span class="si">{</span><span class="n">vrt_path</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">output_dem_path</span><span class="si">}</span><span class="s1"> -wo NUM_THREADS=ALL_CPUS&#39;</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_dem_path</span><span class="p">):</span>
     <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 </pre></div>
@@ -441,7 +441,7 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># check # pixels low res</span>
 <span class="n">new_crs</span> <span class="o">=</span> <span class="mi">3005</span>
-<span class="n">dem_path_reprojected</span> <span class="o">=</span> <span class="n">output_dem_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">crs</span><span class="si">}</span><span class="s1">.tif&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">new_crs</span><span class="si">}</span><span class="s1">.tif&#39;</span><span class="p">)</span>
+<span class="n">dem_path_reprojected</span> <span class="o">=</span> <span class="n">output_dem_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">input_crs</span><span class="si">}</span><span class="s1">.tif&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">new_crs</span><span class="si">}</span><span class="s1">.tif&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dem_path_reprojected</span><span class="p">):</span>
     <span class="c1"># reproject to epsg 3005</span>
     <span class="n">lr</span> <span class="o">=</span> <span class="n">rxr</span><span class="o">.</span><span class="n">open_rasterio</span><span class="p">(</span><span class="n">output_dem_path</span><span class="p">,</span> <span class="n">masked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;dem&#39;</span><span class="p">)</span>
@@ -449,8 +449,11 @@ document.write(`
     <span class="n">lr</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">to_raster</span><span class="p">(</span><span class="n">dem_path_reprojected</span><span class="p">)</span>
     <span class="n">lr_shape</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">dem_resolution</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">resolution</span><span class="p">()</span>
+    <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dem_resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dem_resolution</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
     <span class="n">n_pix</span> <span class="o">=</span> <span class="n">lr_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">lr_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;   ...img has </span><span class="si">{</span><span class="n">n_pix</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> pixels&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;   ...img has </span><span class="si">{</span><span class="n">n_pix</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> pixels at </span><span class="si">{</span><span class="n">dx</span><span class="si">}</span><span class="s1">x</span><span class="si">{</span><span class="n">dy</span><span class="si">}</span><span class="s1">m resolution&#39;</span><span class="p">)</span>
+    
 <span class="k">else</span><span class="p">:</span>
     <span class="n">fname</span> <span class="o">=</span> <span class="n">dem_path_reprojected</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;   ...</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1"> exists, skipping dem reprojection..&#39;</span><span class="p">)</span>
@@ -459,10 +462,10 @@ document.write(`
 </div>
 </div>
 <p>The command below will try to plot the raster, it should look like the image below.</p>
-<figure class="align-default" id="id1">
+<figure class="align-default" id="id2">
 <a class="reference internal image-reference" href="../_images/vi_dem.png"><img alt="../_images/vi_dem.png" src="../_images/vi_dem.png" style="width: 600px;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 2 </span><span class="caption-text">The elevation of Vancouver Island represented in colour.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 3 </span><span class="caption-text">The elevation of Vancouver Island represented in colour.</span><a class="headerlink" href="#id2" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
 <div class="admonition note">
@@ -506,7 +509,25 @@ document.write(`
 <p>Note that to run functions using the whitebox library, we need to provide <strong>absolute urls</strong>, i.e. the full file path (<code class="docutils literal notranslate"><span class="pre">/home/danbot/Documents/code/23/bcub/content/data/DEM/...</span></code>) as opposed to the relative filepath (<code class="docutils literal notranslate"><span class="pre">data/DEM/...</span></code>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filled_dem_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dem_dir</span><span class="p">,</span> <span class="n">dem_path_reprojected</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.tif&#39;</span><span class="p">,</span> <span class="s1">&#39;_filled.tif&#39;</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dem_path_reprojected</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_dem</span> <span class="o">=</span> <span class="n">rxr</span><span class="o">.</span><span class="n">open_rasterio</span><span class="p">(</span><span class="n">dem_path_reprojected</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;dem&#39;</span><span class="p">)</span>
+<span class="n">resolution</span> <span class="o">=</span> <span class="n">new_dem</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">resolution</span><span class="p">()</span>
+<span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">resolution</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">n_pix</span> <span class="o">=</span> <span class="n">lr_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">lr_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;   ...raster in </span><span class="si">{</span><span class="n">new_crs</span><span class="si">}</span><span class="s1"> CRS has </span><span class="si">{</span><span class="n">n_pix</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> pixels at </span><span class="si">{</span><span class="n">dx</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1">x</span><span class="si">{</span><span class="n">dy</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1">m resolution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filled_dem_path</span> <span class="o">=</span> <span class="n">dem_path_reprojected</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.tif&#39;</span><span class="p">,</span> <span class="s1">&#39;_filled.tif&#39;</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filled_dem_path</span><span class="p">):</span>
     <span class="n">wbt</span><span class="o">.</span><span class="n">fill_depressions</span><span class="p">(</span>
@@ -526,8 +547,7 @@ document.write(`
 <h2>Flow Direction, Accumulation, and Stream Network<a class="headerlink" href="#flow-direction-accumulation-and-stream-network" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># d8 pointer</span>
-<span class="n">d8_pointer_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dem_dir</span><span class="p">,</span> <span class="s1">&#39;Vancouver_Island_d8_pointer.tif&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d8_pointer_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_dem_folder</span><span class="p">,</span> <span class="s1">&#39;Vancouver_Island_d8_pointer.tif&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">d8_pointer_path</span><span class="p">):</span>
     <span class="n">wbt</span><span class="o">.</span><span class="n">d8_pointer</span><span class="p">(</span>
         <span class="n">filled_dem_path</span><span class="p">,</span> 
@@ -542,7 +562,7 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># flow accumulation</span>
-<span class="n">acc_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dem_dir</span><span class="p">,</span> <span class="s1">&#39;Vancouver_Island_acc.tif&#39;</span><span class="p">)</span>
+<span class="n">acc_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_dem_folder</span><span class="p">,</span> <span class="s1">&#39;Vancouver_Island_acc.tif&#39;</span><span class="p">)</span>
 <span class="n">wbt</span><span class="o">.</span><span class="n">d8_flow_accumulation</span><span class="p">(</span>
     <span class="n">filled_dem_path</span><span class="p">,</span> 
     <span class="n">acc_path</span><span class="p">,</span> 
@@ -561,18 +581,8 @@ document.write(`
 <p>Make sure you are looking at the projected dem, otherwise you will be measuring resolution in decimal degrees.  We want the threshold expressed as number of cells/pixels, It should be just over 2000.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">dem_resolution</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;raster resolution is </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">dx</span><span class="p">)</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1">x</span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">dy</span><span class="p">)</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1"> m&#39;</span><span class="p">)</span>
-<span class="n">threshold</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1E6</span> <span class="o">/</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">dx</span><span class="p">)</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dy</span><span class="p">)))</span> <span class="c1"># 1E6 m^2 = 1 km^2</span>
-<span class="n">threshold</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># extract streams</span>
-<span class="n">streams_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dem_dir</span><span class="p">,</span> <span class="s1">&#39;Vancouver_Island_streams.tif&#39;</span><span class="p">)</span>
+<span class="n">streams_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_dem_folder</span><span class="p">,</span> <span class="s1">&#39;Vancouver_Island_streams.tif&#39;</span><span class="p">)</span>
 <span class="n">wbt</span><span class="o">.</span><span class="n">extract_streams</span><span class="p">(</span>
     <span class="n">acc_path</span><span class="p">,</span> 
     <span class="n">streams_path</span><span class="p">,</span> 
@@ -584,16 +594,31 @@ document.write(`
 </div>
 </div>
 </div>
+<p>Additionally create a stream link raster (gives each network segment a unique ID)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stream_link_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_dem_folder</span><span class="p">,</span> <span class="s1">&#39;Vancouver_Island_stream_links.tif&#39;</span><span class="p">)</span>
+<span class="n">wbt</span><span class="o">.</span><span class="n">stream_link_identifier</span><span class="p">(</span>
+    <span class="n">d8_pointer_path</span><span class="p">,</span> 
+    <span class="n">streams_path</span><span class="p">,</span> 
+    <span class="n">stream_link_path</span><span class="p">,</span> 
+    <span class="n">esri_pntr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+    <span class="n">zero_background</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 <p>The final product should now have resolved stream networks, see the example detail below.  Generally if streams do not resolve, there is an issue with the flow direction raster, i.e. check that the flow direction was created from a filled DEM.</p>
 <p><img alt="Resulting streams from the processed DEM" src="../_images/streams_result.png" /></p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>River networks derived from digital elevation data are mostly representative, but they are far from perfect.  The figure below is one example of where the stream network as derived from the USGS 3DEP DEM diverges from the watercourse polygon defined in the National Hydrographic Network.  We’ll use the NHN data to filter pour points in the next notebook.</p>
 </div>
-<figure class="align-default" id="id2">
+<figure class="align-default" id="id3">
 <a class="reference internal image-reference" href="../_images/reality_of_stream_network_from_dem.png"><img alt="../_images/reality_of_stream_network_from_dem.png" src="../_images/reality_of_stream_network_from_dem.png" style="width: 600px;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 3 </span><span class="caption-text">The black squares represent the stream network that will be derived in the next chapter, while the light blue polygon represents a watercourse layer polygon from the National Hydrographic Network dataset.</span><a class="headerlink" href="#id2" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 4 </span><span class="caption-text">The black squares represent the stream network that will be derived in the next chapter, while the light blue polygon represents a watercourse layer polygon from the National Hydrographic Network dataset.</span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
 </section>

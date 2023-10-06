@@ -9,6 +9,22 @@ import geopandas as gpd
 import multiprocessing as mp
 
 
+def clip_raster_to_basin(clipping_polygon, raster):
+    bounds = tuple(clipping_polygon.bounds.values[0])
+    try:
+        # clip first to bounding box, then to polygon for better performance
+        subset_raster = raster.rio.clip_box(*bounds).copy()
+        clipped_raster = subset_raster.rio.clip(
+        # clipped_raster = raster.rio.clip(
+            clipping_polygon.geometry, 
+            clipping_polygon.crs.to_epsg(),
+            all_touched=True,
+            )
+        return True, clipped_raster
+    except Exception as e:
+        print(e)
+        return False, None
+
 def retrieve_raster(filename):
     """
     Take in a file name and return the raster data, 
@@ -142,6 +158,19 @@ def redistribute_vertices(geom, distance):
         raise ValueError('unhandled geometry %s', (geom.geom_type,))
 
 
+def format_batch_geometries(all_polygons, ppt_batch, region_raster_crs):
+    ppt_batch['ppt_x'] = ppt_batch.geometry.x.astype(int)
+    ppt_batch['ppt_y'] = ppt_batch.geometry.y.astype(int)
+    ppt_batch.drop(inplace=True, labels=['geometry'], axis=1)
+    batch_polygons = gpd.GeoDataFrame(pd.concat(all_polygons), crs=region_raster_crs)
+    batch_polygons.sort_values(by='VALUE', inplace=True)
+    batch_polygons.reset_index(inplace=True, drop=True)
+    batch = gpd.GeoDataFrame(pd.concat([batch_polygons, ppt_batch], axis=1), crs=region_raster_crs)
+    batch['centroid_x'] = batch.geometry.centroid.x.astype(int)
+    batch['centroid_y'] = batch.geometry.centroid.y.astype(int)
+    return batch    
+
+
 def create_ppt_file_batches(df, filesize, temp_ppt_filepath, batch_limit=1E6):    
     """
     divide the dataframe into chunks for batch processing
@@ -151,7 +180,7 @@ def create_ppt_file_batches(df, filesize, temp_ppt_filepath, batch_limit=1E6):
     n_batches = int(filesize * len(df) / batch_limit) + 1
     print(f'        ...running {n_batches} batch(es) on {filesize:.1f}MB raster.')
 
-    include_cols = ['id', 'area', 'cell_idx', 'acc', 'OUTLET', 'CONF', 'ix', 'jx', 'geometry']
+    include_cols = ['acc', 'ix', 'jx', 'geometry']
     
     df = df[include_cols]
     

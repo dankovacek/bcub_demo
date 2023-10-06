@@ -459,7 +459,7 @@ document.write(`
 
 <span class="c1"># set the path where the DEM files should be saved locally</span>
 <span class="c1"># save_path = os.path.join(base_dir, &#39;data/DEM/&#39;)</span>
-<span class="n">dem_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;data/DEM/&#39;</span><span class="p">)</span>
+<span class="n">dem_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;data/DEM&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dem_path</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">dem_path</span><span class="p">)</span>
 
@@ -521,7 +521,11 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># this command builds the dem mosaic &quot;virtual raster&quot;</span>
-<span class="n">vrt_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dem_path</span><span class="si">}</span><span class="s1">/USGS_3DEP_mosaic_4269.vrt&#39;</span>
+<span class="n">processed_dem_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;data/processed_dem&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">processed_dem_dir</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">processed_dem_dir</span><span class="p">)</span>
+<span class="n">vrt_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_dem_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;USGS_3DEP_mosaic_4269.vrt&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dem_path</span><span class="si">}</span><span class="s1">/*.tif&quot;&#39;</span><span class="p">)</span>
 <span class="n">vrt_command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;gdalbuildvrt -resolution highest -a_srs epsg:4269 </span><span class="si">{</span><span class="n">vrt_path</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">dem_path</span><span class="si">}</span><span class="s2">/*.tif&quot;</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vrt_path</span><span class="p">):</span>
     <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">vrt_command</span><span class="p">)</span>

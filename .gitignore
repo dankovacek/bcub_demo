@@ -1,7 +1,11 @@
 notebooks/data/DEM/*
 # notebooks/data/region_polygons/
 notebooks/data/region_polygons.zip
+notebooks/data/*.gpkg
 notebooks/data/region_polygons/*_4269.geojson
+notebooks/data/animated_gif_script.py
+notebooks/data/daymet_data/
+notebooks/data/region_polygons/*_mask.*
 notebooks/data/region_polygons/*_simplified.geojson
 notebooks/data/geospatial_layers/*
 notebooks/data/basins/*
