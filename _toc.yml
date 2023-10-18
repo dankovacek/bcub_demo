@@ -8,4 +8,5 @@ chapters:
 - file: notebooks/2_DEM_Preprocessing 
 - file: notebooks/3_Pour_Point_Extraction
 - file: notebooks/4_Basin_Delineation 
-- file: notebooks/5_Attribute_Extraction
+- file: notebooks/5_Daymet
+- file: notebooks/6_Attribute_Extraction
