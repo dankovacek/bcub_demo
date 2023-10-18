@@ -163,7 +163,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="2_DEM_Preprocessing.html">2. Digital Elevation Preprocessing</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">3. Pour Point Extraction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_Basin_Delineation.html">4. Basin Delineation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_Attribute_Extraction.html">5. Basin Attribute Extraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_Daymet.html">6. Climate Attribute Development- NASA Daymet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_Attribute_Extraction.html">5. Basin Attribute Extraction</a></li>
 </ul>
 
     </div>
@@ -477,7 +478,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Raster resolution is 22x22m
-   ...time to load resources: 12.1s.
+   ...time to load resources: 14.1s.
 </pre></div>
 </div>
 </div>
@@ -516,8 +517,7 @@ document.write(`
         <span class="n">ppts</span><span class="p">[</span><span class="n">c_idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">ppt</span> <span class="o">=</span> <span class="n">ppts</span><span class="p">[</span><span class="n">c_idx</span><span class="p">]</span>
 
-    <span class="c1"># Add river outlets, as these are by definition</span>
-    <span class="c1"># confluences and especially prevalent in coastal regions</span>
+    <span class="c1"># Add river outlets</span>
     <span class="n">focus_cell_acc</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
     <span class="n">focus_cell_dir</span> <span class="o">=</span> <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
 
@@ -606,6 +606,7 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ppt_gdf</span> <span class="o">=</span> <span class="n">create_pour_point_gdf</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">ppt_df</span><span class="p">,</span> <span class="n">stream_crs</span><span class="p">,</span> <span class="n">output_ppt_path</span><span class="p">)</span>
+<span class="n">ppt_gdf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -618,14 +619,94 @@ document.write(`
     ...50/100 chunks processed in 0.2s
     ...60/100 chunks processed in 0.2s
     ...70/100 chunks processed in 0.2s
-    ...80/100 chunks processed in 0.3s
+    ...80/100 chunks processed in 0.2s
     ...90/100 chunks processed in 0.3s
     ...100/100 chunks processed in 0.3s
     22556 pour points created.
-   ...ppts geodataframe processed in0.4s
+   ...ppts geodataframe processed in0.3s
 </pre></div>
 </div>
-</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>cell_idx</th>
+      <th>acc</th>
+      <th>OUTLET</th>
+      <th>CONF</th>
+      <th>ix</th>
+      <th>jx</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>9</th>
+      <td>199,4302</td>
+      <td>22657.0</td>
+      <td>True</td>
+      <td>True</td>
+      <td>199</td>
+      <td>4302</td>
+      <td>POINT (865049.001 659747.390)</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>214,4329</td>
+      <td>21779.0</td>
+      <td>False</td>
+      <td>True</td>
+      <td>214</td>
+      <td>4329</td>
+      <td>POINT (865649.625 659413.710)</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>214,4330</td>
+      <td>18179.0</td>
+      <td>False</td>
+      <td>True</td>
+      <td>214</td>
+      <td>4330</td>
+      <td>POINT (865671.870 659413.710)</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>215,4329</td>
+      <td>3591.0</td>
+      <td>False</td>
+      <td>True</td>
+      <td>215</td>
+      <td>4329</td>
+      <td>POINT (865649.625 659391.465)</td>
+    </tr>
+    <tr>
+      <th>137</th>
+      <td>234,4352</td>
+      <td>11530.0</td>
+      <td>False</td>
+      <td>True</td>
+      <td>234</td>
+      <td>4352</td>
+      <td>POINT (866161.268 658968.803)</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 </section>
 <section id="filter-spurious-confluences">
@@ -813,6 +894,7 @@ document.write(`
     <span class="n">bbox_geom</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">region_polygon</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">lakes_crs</span><span class="p">)</span><span class="o">.</span><span class="n">bounds</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">lake_features_box</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">hydroLakes_clipped_fpath</span><span class="p">,</span> 
                                   <span class="n">bbox</span><span class="o">=</span><span class="n">bbox_geom</span><span class="p">)</span>
+    
     <span class="c1"># clip features to the region polygon</span>
     <span class="n">region_polygon</span> <span class="o">=</span> <span class="n">region_polygon</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">lake_features_box</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
     <span class="n">lake_features</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">lake_features_box</span><span class="p">,</span> <span class="n">region_polygon</span><span class="p">,</span> <span class="n">keep_geom_type</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -826,8 +908,6 @@ document.write(`
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    File saved.  There are </span><span class="si">{</span><span class="n">n_lakes</span><span class="si">}</span><span class="s1"> water body objects in </span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">lakes_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">lakes_df_fpath</span><span class="p">)</span>
-
-    
 </pre></div>
 </div>
 </div>
@@ -908,6 +988,41 @@ document.write(`
 </figure>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_link_ids</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">target</span>
+    <span class="n">stream_loc</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="n">link_id</span> <span class="o">=</span> <span class="n">stream_loc</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="k">if</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">link_id</span><span class="p">):</span>
+        <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">link_id</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nbr</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">clip_box</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">-</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="o">+</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">y</span><span class="o">+</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">nbr</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        
+        <span class="n">raster_nonzero</span> <span class="o">=</span> <span class="n">nbr</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nbr</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># Check surrounding cells for nonzero link_ids</span>
+        <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">raster_nonzero</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">raster_nonzero</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">for</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">):</span>
+            <span class="n">link_id</span> <span class="o">=</span> <span class="n">nbr</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">ix</span><span class="p">,</span> <span class="n">jx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">x1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">y1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            
+            <span class="c1"># check if point is valid</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">jx</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">link_id</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">jx</span><span class="p">)</span>
+            <span class="k">if</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">link_id</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">ix</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">jx</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Point</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="n">link_id</span><span class="p">]</span>
+            
+    <span class="k">return</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_lake_inflows</span><span class="p">(</span><span class="n">lakes_df</span><span class="p">,</span> <span class="n">ppts</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">acc</span><span class="p">):</span>
     
     <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
@@ -916,15 +1031,12 @@ document.write(`
     <span class="n">crs</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">to_epsg</span><span class="p">()</span>
 
     <span class="n">points_to_check</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1"># used_links = []</span>
-    <span class="c1"># all_links = []</span>
-    <span class="c1"># test_pts = []</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">lakes_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
         <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;   Processing lake group </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">lakes_df</span><span class="p">)</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
         
-        <span class="n">lake_geom</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span>        
+        <span class="n">lake_geom</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span>
         <span class="c1"># resample the shoreline vector to prevent missing confluence points</span>
         <span class="n">resampled_shoreline</span> <span class="o">=</span> <span class="n">redistribute_vertices</span><span class="p">(</span><span class="n">lake_geom</span><span class="o">.</span><span class="n">exterior</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)</span><span class="o">.</span><span class="n">coords</span><span class="o">.</span><span class="n">xy</span>
         <span class="n">xs</span> <span class="o">=</span> <span class="n">resampled_shoreline</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
@@ -963,41 +1075,6 @@ document.write(`
         <span class="n">points_to_check</span> <span class="o">+=</span> <span class="p">[</span><span class="n">pts</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">points_to_check</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_link_ids</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">target</span>
-    <span class="n">stream_loc</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
-    <span class="n">link_id</span> <span class="o">=</span> <span class="n">stream_loc</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-    <span class="k">if</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">link_id</span><span class="p">):</span>
-        <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">link_id</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">nbr</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">clip_box</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">-</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="o">+</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">y</span><span class="o">+</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">nbr</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        
-        <span class="n">raster_nonzero</span> <span class="o">=</span> <span class="n">nbr</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nbr</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        
-        <span class="c1"># Check surrounding cells for nonzero link_ids</span>
-        <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">raster_nonzero</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">raster_nonzero</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">values</span>
-        <span class="k">for</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">):</span>
-            <span class="n">link_id</span> <span class="o">=</span> <span class="n">nbr</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-            <span class="n">ix</span><span class="p">,</span> <span class="n">jx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">x1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">y1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            
-            <span class="c1"># check if point is valid</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">jx</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">link_id</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">jx</span><span class="p">)</span>
-            <span class="k">if</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">link_id</span><span class="p">):</span>
-                <span class="k">return</span> <span class="p">[</span><span class="n">ix</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">jx</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Point</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="n">link_id</span><span class="p">]</span>
-            
-    <span class="k">return</span> <span class="kc">None</span>
 </pre></div>
 </div>
 </div>
@@ -1077,24 +1154,18 @@ document.write(`
 <span class="n">all_points_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">points_to_check</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">crs</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;EPSG:</span><span class="si">{</span><span class="n">pts_crs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="n">all_points_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">new_pts</span> <span class="o">=</span> <span class="n">check_point_spacing</span><span class="p">(</span><span class="n">all_points_df</span><span class="p">,</span> <span class="n">filtered_ppts</span><span class="p">,</span> <span class="n">ppt_gdf</span><span class="p">)</span>
 
+
+<span class="n">new_pts</span> <span class="o">=</span> <span class="n">check_point_spacing</span><span class="p">(</span><span class="n">all_points_df</span><span class="p">,</span> <span class="n">filtered_ppts</span><span class="p">,</span> <span class="n">ppt_gdf</span><span class="p">)</span>
 <span class="n">output_ppts</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">filtered_ppts</span><span class="p">,</span> <span class="n">new_pts</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">crs</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;EPSG:</span><span class="si">{</span><span class="n">stream</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">to_epsg</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="n">n_pts0</span><span class="p">,</span> <span class="n">n_pts1</span><span class="p">,</span> <span class="n">n_final</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ppt_gdf</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">filtered_ppts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_ppts</span><span class="p">)</span>
-        
         
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">n_pts0</span><span class="o">-</span><span class="n">n_pts1</span><span class="si">}</span><span class="s1"> points eliminated (fall within lakes)&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">new_pts</span><span class="p">)</span><span class="si">}</span><span class="s1"> points added for lake inflows.&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">n_final</span><span class="si">}</span><span class="s1"> points after filter and merge. (</span><span class="si">{</span><span class="n">n_pts0</span><span class="o">-</span><span class="n">n_final</span><span class="si">}</span><span class="s1"> difference)&#39;</span><span class="p">)</span>
 <span class="n">output_ppts</span><span class="p">[</span><span class="s1">&#39;region_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">region</span>
-<span class="c1"># create separate columns for geometry latitude and longitude</span>
-<span class="n">output_ppts</span><span class="p">[</span><span class="s1">&#39;centroid_lon_m_3005&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_ppts</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">x</span>
-<span class="n">output_ppts</span><span class="p">[</span><span class="s1">&#39;centroid_lat_m_3005&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_ppts</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">y</span>
-<span class="n">output_ppts</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cell_idx&#39;</span><span class="p">,</span> <span class="s1">&#39;ix&#39;</span><span class="p">,</span> <span class="s1">&#39;jx&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="c1"># new_pts = gpd.GeoDataFrame(geometry=all_pts, crs=f&#39;EPSG:{pts_crs}&#39;)</span>
-<span class="c1"># final_ppts = gpd.GeoDataFrame(pd.concat([filtered_ppts, new_pts], axis=0), crs=f&#39;EPSG:{pts_crs}&#39;)</span>
-<span class="c1"># final_ppts = final_ppts[[&#39;cell_idx&#39;, &#39;acc&#39;, &#39;OUTLET&#39;, &#39;CONF&#39;, &#39;ix&#39;,	&#39;jx&#39;, &#39;geometry&#39;]]</span>
-<span class="c1"># final_ppts</span>
+<span class="c1"># drop unnecessary labels</span>
+<span class="n">output_ppts</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cell_idx&#39;</span><span class="p">,</span> <span class="s1">&#39;link_id&#39;</span><span class="p">,</span> <span class="s1">&#39;OUTLET&#39;</span><span class="p">,</span> <span class="s1">&#39;CONF&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

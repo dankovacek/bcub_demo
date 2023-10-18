@@ -64,7 +64,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/4_Basin_Delineation';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="5. Basin Attribute Extraction" href="5_Attribute_Extraction.html" />
+    <link rel="next" title="6. Climate Attribute Development- NASA Daymet" href="5_Daymet.html" />
     <link rel="prev" title="3. Pour Point Extraction" href="3_Pour_Point_Extraction.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -161,7 +161,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="2_DEM_Preprocessing.html">2. Digital Elevation Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_Pour_Point_Extraction.html">3. Pour Point Extraction</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">4. Basin Delineation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_Attribute_Extraction.html">5. Basin Attribute Extraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_Daymet.html">6. Climate Attribute Development- NASA Daymet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_Attribute_Extraction.html">5. Basin Attribute Extraction</a></li>
 </ul>
 
     </div>
@@ -379,6 +380,18 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+
+<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Point</span>
+<span class="kn">from</span> <span class="nn">shapely.validation</span> <span class="kn">import</span> <span class="n">make_valid</span>
+
+<span class="kn">from</span> <span class="nn">utilities</span> <span class="kn">import</span> <span class="o">*</span>
+
 <span class="kn">import</span> <span class="nn">whitebox</span> 
 
 <span class="n">wbt</span> <span class="o">=</span> <span class="n">whitebox</span><span class="o">.</span><span class="n">WhiteboxTools</span><span class="p">()</span>
@@ -397,23 +410,11 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
-
-<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Point</span>
-<span class="kn">from</span> <span class="nn">shapely.validation</span> <span class="kn">import</span> <span class="n">make_valid</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">raster_to_vector_basins_batch</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    If we send too many pour points in a large raster, we can </span>
-<span class="sd">    generate a huge number of temporary raster files that could easily </span>
-<span class="sd">    exceed common SSD disk capacities.</span>
-
-<span class="sd">    Here we set up batches to limit the temporary disk space used.</span>
+<span class="sd">    If we send too many pour points per batch to the Whitebox &quot;unnest&quot; function, </span>
+<span class="sd">    we generate a huge number of temporary raster files that could easily </span>
+<span class="sd">    exceed current SSD disk capacities.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">raster_fname</span><span class="p">,</span> <span class="n">raster_crs</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">min_area</span><span class="p">,</span> <span class="n">temp_folder</span> <span class="o">=</span> <span class="nb">input</span>
@@ -454,7 +455,7 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;Vancouver_Island&#39;</span>
 
-<span class="n">fdir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;data/DEM/</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_d8_pointer.tif&#39;</span><span class="p">)</span>
+<span class="n">fdir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;data/processed_dem/</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_d8_pointer.tif&#39;</span><span class="p">)</span>
 
 <span class="c1"># get the file size in MB</span>
 <span class="n">filesize</span> <span class="o">=</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">fdir_path</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">20</span> <span class="p">)</span>
@@ -462,6 +463,9 @@ document.write(`
 <span class="n">temp_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;data/temp/&#39;</span><span class="p">)</span>        
 <span class="n">ppt_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;data/pour_points/&#39;</span><span class="p">)</span>
 <span class="n">basin_output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;data/basins/&#39;</span><span class="p">)</span>
+<span class="c1"># check for an output file to allow for partial updating</span>
+<span class="c1"># by tracking (unique) ppt indices</span>
+<span class="n">output_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;data/basins/</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_basins.geojson&#39;</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">basin_output_dir</span><span class="p">]:</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
@@ -472,11 +476,7 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utilities</span> <span class="kn">import</span> <span class="p">(</span><span class="n">retrieve_raster</span><span class="p">,</span> <span class="n">redistribute_vertices</span><span class="p">,</span> <span class="n">match_ppt_to_polygons_by_order</span><span class="p">,</span>
-                        <span class="n">check_for_ppt_batches</span><span class="p">,</span> <span class="n">create_ppt_file_batches</span><span class="p">,</span> <span class="n">clean_up_temp_files</span><span class="p">,</span>
-                        <span class="n">filter_and_explode_geoms</span><span class="p">)</span>
-
-<span class="n">region_raster</span><span class="p">,</span> <span class="n">region_raster_crs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">fdir_path</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">region_raster</span><span class="p">,</span> <span class="n">region_raster_crs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">fdir_path</span><span class="p">)</span>
 <span class="n">raster_resolution</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">region_raster</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">resolution</span><span class="p">())</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1"> raster crs = </span><span class="si">{</span><span class="n">region_raster_crs</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
 </pre></div>
@@ -485,11 +485,9 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
-
-<span class="c1"># Break the pour points into unique sets</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Break the pour points into unique sets</span>
 <span class="c1"># to avoid duplicate delineations</span>
-<span class="n">ppt_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ppt_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_pour_points.geojson&#39;</span><span class="p">)</span>
+<span class="n">ppt_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ppt_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_pour_points_filtered.geojson&#39;</span><span class="p">)</span>
 
 <span class="n">ppt_gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">ppt_file</span><span class="p">)</span>
 <span class="n">ppt_crs</span> <span class="o">=</span> <span class="n">ppt_gdf</span><span class="o">.</span><span class="n">crs</span>
@@ -500,31 +498,14 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># check that all pour point cell indices are unique</span>
-<span class="n">ppt_gdf</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span>
-    <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cell_idx&#39;</span><span class="p">],</span> 
-    <span class="n">keep</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span>
-    <span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ppt_gdf</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># check for an output file to allow for partial updating</span>
-<span class="c1"># by tracking (unique) ppt indices</span>
-<span class="n">output_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;data/basins/</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_basins.geojson&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="c1"># check if the ppt batches have already been created</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># check if the ppt batches have already been created</span>
 <span class="n">batch_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s1">&#39;ppt_batches/&#39;</span><span class="p">)</span>
 <span class="n">batches_exist</span> <span class="o">=</span> <span class="n">check_for_ppt_batches</span><span class="p">(</span><span class="n">batch_dir</span><span class="p">)</span>
 
@@ -565,6 +546,8 @@ document.write(`
     <span class="n">temp_fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;temp_raster.tif&#39;</span>
     <span class="n">temp_basin_raster_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">temp_fname</span><span class="p">)</span>            
     <span class="n">batch_output_fpath</span> <span class="o">=</span> <span class="n">output_fpath</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.geojson&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">batch_no</span><span class="si">:</span><span class="s1">04d</span><span class="si">}</span><span class="s1">.geojson&#39;</span><span class="p">)</span>
+
+    <span class="n">ppt_batch</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">ppt_batch_path</span><span class="p">)</span>
     
     <span class="c1"># creates the minimum set of rasters with non-overlapping polygons</span>
     <span class="n">wbt</span><span class="o">.</span><span class="n">unnest_basins</span><span class="p">(</span>
@@ -572,54 +555,42 @@ document.write(`
         <span class="n">ppt_batch_path</span><span class="p">,</span> 
         <span class="n">temp_basin_raster_path</span><span class="p">,</span>
         <span class="n">esri_pntr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
-        <span class="c1"># callback=default_callback</span>
     <span class="p">)</span>
     
     <span class="n">batch_rasters</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">))</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.tif&#39;</span><span class="p">)])</span>
 
-    <span class="c1"># retrieve the batch pour point as a dataframe</span>
-    <span class="n">ppt_batch</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">ppt_batch_path</span><span class="p">)</span>
-
     <span class="n">tb1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    Basins delineated for </span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1"> ppt batch </span><span class="si">{</span><span class="n">batch_no</span><span class="si">}</span><span class="s1"> in </span><span class="si">{</span><span class="p">(</span><span class="n">tb1</span><span class="o">-</span><span class="n">t_batch_start</span><span class="p">)</span><span class="o">/</span><span class="mi">60</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">min. </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">)</span><span class="si">}</span><span class="s1"> raster sub-batches to process (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ppt_batch</span><span class="p">)</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
 
     <span class="c1"># process the raster batches in parallel</span>
     <span class="n">crs_array</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;EPSG:3005&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">)</span>
-    <span class="c1"># min_A_array = [min_basin_area] * len(batch_raster_fpaths)</span>
     <span class="n">resolution_array</span> <span class="o">=</span> <span class="p">[</span><span class="n">raster_resolution</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">)</span>
     <span class="n">temp_folder_array</span> <span class="o">=</span> <span class="p">[</span><span class="n">temp_dir</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">)</span>
     <span class="n">min_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">min_basin_area</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">)</span>
     <span class="n">path_inputs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">,</span> <span class="n">crs_array</span><span class="p">,</span> <span class="n">resolution_array</span><span class="p">,</span> <span class="n">min_areas</span><span class="p">,</span> <span class="n">temp_folder_array</span><span class="p">))</span>
-    
     <span class="n">batch_size_GB</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_rasters</span><span class="p">)</span> <span class="o">*</span> <span class="n">filesize</span> <span class="o">/</span> <span class="mf">1E3</span>
     
     <span class="c1"># Each processor core will load and process a full size DEM, and</span>
     <span class="c1"># total ram usage can be multiples of the raster file size for each process. </span>
     <span class="c1"># You need to balance the number of cores with RAM usage.</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;     Estimated batch size = </span><span class="si">{</span><span class="n">batch_size_GB</span><span class="si">}</span><span class="s1"> GB&#39;</span><span class="p">)</span>
-    <span class="n">n_procs</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">n_procs</span> <span class="o">=</span> <span class="mi">4</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    Setting n_procs=</span><span class="si">{</span><span class="n">n_procs</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1"> For a batch size of </span><span class="si">{</span><span class="n">batch_size_GB</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">GB&#39;</span><span class="p">)</span>
 
     <span class="n">p</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">n_procs</span><span class="p">)</span>
     <span class="n">trv0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">all_polygons</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">raster_to_vector_basins_batch</span><span class="p">,</span> <span class="n">path_inputs</span><span class="p">)</span>
     <span class="n">trv1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">trv1</span><span class="o">-</span><span class="n">trv0</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">s to convert </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">path_inputs</span><span class="p">)</span><span class="si">}</span><span class="s1"> rasters to vector basins.&#39;</span><span class="p">)</span>
-    
-    <span class="c1"># concatenate polygons</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">trv1</span><span class="o">-</span><span class="n">trv0</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">s to convert </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">path_inputs</span><span class="p">)</span><span class="si">}</span><span class="s1"> rasters to vector basins.&#39;</span><span class="p">)</span>        
+        
+    <span class="c1"># concatenate polygons and ppt info</span>
+    <span class="n">batch_output</span> <span class="o">=</span> <span class="n">format_batch_geometries</span><span class="p">(</span><span class="n">all_polygons</span><span class="p">,</span> <span class="n">ppt_batch</span><span class="p">,</span> <span class="n">region_raster_crs</span><span class="p">)</span>
+    <span class="n">batch_output</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">batch_output_fpath</span><span class="p">)</span>
     <span class="n">trc0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">batch_polygons</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">all_polygons</span><span class="p">),</span> <span class="n">crs</span><span class="o">=</span><span class="n">region_raster_crs</span><span class="p">)</span>
-    
     <span class="c1"># sort by VALUE to maintain ordering from ppt batching / raster basin unnesting operation</span>
-    <span class="n">batch_polygons</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;VALUE&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">batch_polygons</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">batch_polygons</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">batch_output_fpath</span><span class="p">)</span>
+
     <span class="n">trc1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">trc1</span><span class="o">-</span><span class="n">trc0</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">s to concatenate basin vector polygons.&#39;</span><span class="p">)</span>
-
-    <span class="n">basin_output_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch_output_fpath</span><span class="p">)</span>
-    
+    <span class="n">basin_output_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch_output_fpath</span><span class="p">)</span>    
     
     <span class="c1"># remove all temporary files (don&#39;t delete the raster batches yet!)</span>
     <span class="n">clean_up_temp_files</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">batch_rasters</span><span class="p">)</span>
@@ -632,12 +603,11 @@ document.write(`
 <p>You can work with the output geojson files directly (smaller files), or concatenat them and convert to other useful formats like <a class="reference external" href="https://mapscaping.com/understanding-geopackage/#:~:text=Versatility%3A%20GeoPackage%20can%20store%20multiple,spatial%20queries%20and%20data%20visualization.">Geopackage</a> or <a class="reference external" href="https://getindata.com/blog/introducing-geoparquet-data-format/">Parquet</a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">basin_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">basin_output_files</span><span class="p">)))</span>
-
-<span class="n">batch_dfs</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">basin_files</span><span class="p">:</span>
-    <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">batch_dfs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">basin_output_files</span><span class="p">))):</span>
+    <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
     <span class="n">layer</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+    <span class="n">layer</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;FID&#39;</span><span class="p">,</span> <span class="s1">&#39;VALUE&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">batch_dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
     
 <span class="n">all_data</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">batch_dfs</span><span class="p">),</span> <span class="n">crs</span><span class="o">=</span><span class="n">layer</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
@@ -646,13 +616,20 @@ document.write(`
     <span class="n">output_fpath</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.geojson&#39;</span><span class="p">,</span> <span class="s1">&#39;.gpkg&#39;</span><span class="p">),</span> 
     <span class="n">driver</span><span class="o">=</span><span class="s1">&#39;GPKG&#39;</span><span class="p">,</span> 
     <span class="n">layer</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;pour_points&#39;</span><span class="p">)</span>
-    
-<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">files</span><span class="p">)):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
-<span class="n">t_n</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-<span class="n">n_processed_basins</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_processed_basins</span><span class="p">)</span>
-<span class="n">ut</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_n</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_processed_basins</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total processing time for </span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">t_n</span><span class="o">-</span><span class="n">t0</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">s (</span><span class="si">{</span><span class="n">ut</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">/basin).&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">temp_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s1">&#39;ppt_batches&#39;</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">temp_files</span><span class="p">:</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s1">&#39;ppt_batches&#39;</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_fpath</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">basin_output_files</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -701,11 +678,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="5_Attribute_Extraction.html"
+       href="5_Daymet.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">5. Basin Attribute Extraction</p>
+        <p class="prev-next-title">6. Climate Attribute Development- NASA Daymet</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

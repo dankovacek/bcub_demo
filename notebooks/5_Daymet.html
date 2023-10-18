@@ -1,0 +1,790 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>6. Climate Attribute Development- NASA Daymet &#8212; British Columbia Ungauged Basin Dataset</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/5_Daymet';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5. Basin Attribute Extraction" href="6_Attribute_Extraction.html" />
+    <link rel="prev" title="4. Basin Delineation" href="4_Basin_Delineation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../0_intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/bcub-logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/bcub-logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../0_intro.html">
+                    BC Ungauged Basin Database (BCUB)
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_Getting_Started.html">1. Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_DEM_Preprocessing.html">2. Digital Elevation Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_Pour_Point_Extraction.html">3. Pour Point Extraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_Basin_Delineation.html">4. Basin Delineation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">6. Climate Attribute Development- NASA Daymet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_Attribute_Extraction.html">5. Basin Attribute Extraction</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/dankovacek/bcub" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/dankovacek/bcub/issues/new?title=Issue%20on%20page%20%2Fnotebooks/5_Daymet.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/5_Daymet.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>6. Climate Attribute Development- NASA Daymet</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-and-registering-for-nasa-daymet-data">Accessing and Registering for NASA DAYMET Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#process-nasa-daymet-data">Process NASA DAYMET Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-raster-tif-files">Create raster (tif) files</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="climate-attribute-development-nasa-daymet">
+<h1>6. Climate Attribute Development- NASA Daymet<a class="headerlink" href="#climate-attribute-development-nasa-daymet" title="Permalink to this heading">#</a></h1>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/animated_years.gif"><img alt="../_images/animated_years.gif" src="../_images/animated_years.gif" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 11 </span><span class="caption-text">NASA Daymet data is spatially distributed time series climate data covering North America and spanning 1980 to 2022.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="accessing-and-registering-for-nasa-daymet-data">
+<h2>Accessing and Registering for NASA DAYMET Data<a class="headerlink" href="#accessing-and-registering-for-nasa-daymet-data" title="Permalink to this heading">#</a></h2>
+<p>NASA’s DAYMET provides daily surface weather and climatological summaries for North America.  To access and automate the download of DAYMET data, follow these steps:</p>
+<ol class="arabic simple">
+<li><p><strong>Register</strong>: Before you can download data, you need to <a class="reference external" href="https://urs.earthdata.nasa.gov/">register with ORNL DAAC</a>.</p></li>
+<li><p><strong>Access the Data</strong>: Once registered, navigate to the <a class="reference external" href="https://daymet.ornl.gov/">DAYMET Data Collection page</a> where you can explore available data sets.</p></li>
+<li><p><strong>Automated Download</strong>: For automated data downloads, you can use the DAYMET web services. Detailed instructions and examples for using these services can be found in the <a class="reference external" href="https://daymet.ornl.gov/web_services.html">DAYMET documentation</a>.</p></li>
+</ol>
+<p>Available climate variables are described in the <a class="reference external" href="https://thredds.daac.ornl.gov/thredds/catalog/ornldaac/2129/catalog.html">Daymet Catalogue</a>:</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Units</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>tmax</p></td>
+<td><p>Daily maximum 2-meter air temperature</p></td>
+<td><p>°C</p></td>
+</tr>
+<tr class="row-odd"><td><p>tmin</p></td>
+<td><p>Daily minimum 2-meter air temperature</p></td>
+<td><p>°C</p></td>
+</tr>
+<tr class="row-even"><td><p>prcp</p></td>
+<td><p>Daily total precipitation</p></td>
+<td><p>mm</p></td>
+</tr>
+<tr class="row-odd"><td><p>srad</p></td>
+<td><p>Incident shortwave radiation flux density</p></td>
+<td><p><span class="math notranslate nohighlight">\(W/m^2\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>vp</p></td>
+<td><p>Water vapor pressure</p></td>
+<td><p>Pa</p></td>
+</tr>
+<tr class="row-odd"><td><p>swe</p></td>
+<td><p>Snow water equivalent</p></td>
+<td><p><span class="math notranslate nohighlight">\(kg/m^2\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>dayl</p></td>
+<td><p>Duration of the daylight period</p></td>
+<td><p>seconds/day</p></td>
+</tr>
+</tbody>
+</table>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span> 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">rioxarray</span> <span class="k">as</span> <span class="nn">rxr</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;Vancouver_Island&#39;</span>
+<span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+<span class="n">polygon_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="sa">f</span><span class="s1">&#39;data/region_polygons/</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">.geojson&#39;</span><span class="p">)</span>
+<span class="n">region_polygon</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">polygon_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">daymet_proj</span> <span class="o">=</span> <span class="s1">&#39;+proj=lcc +lat_1=25 +lat_2=60 +lat_0=42.5 +lon_0=-100 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs&#39;</span>
+<span class="n">daymet_folder</span> <span class="o">=</span><span class="s1">&#39;/media/danbot/Samsung_T51/large_sample_hydrology/common_data/DAYMET&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import the daymet tile index</span>
+<span class="n">tile_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;notebooks/data/daymet_data/Daymet_v4_Tiles.geojson&#39;</span><span class="p">)</span>
+<span class="n">dm_tiles</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">tile_fpath</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;daymet tile index is in </span><span class="si">{</span><span class="n">dm_tiles</span><span class="o">.</span><span class="n">crs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># get the intersection with the region polygon</span>
+<span class="n">tiles_df</span> <span class="o">=</span> <span class="n">dm_tiles</span><span class="o">.</span><span class="n">sjoin</span><span class="p">(</span><span class="n">region_polygon</span><span class="p">)</span>
+<span class="n">tiles_df</span> <span class="o">=</span> <span class="n">tiles_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Latitude (Min)&#39;</span><span class="p">,</span> <span class="s1">&#39;Longitude (Min)&#39;</span><span class="p">])</span>
+<span class="n">tile_rows</span> <span class="o">=</span> <span class="n">tiles_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Latitude (Min)&#39;</span><span class="p">)[</span><span class="s1">&#39;TileID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">tile_ids</span> <span class="o">=</span> <span class="n">tiles_df</span><span class="p">[</span><span class="s1">&#39;TileID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">tile_ids</span><span class="p">)</span><span class="si">}</span><span class="s1"> covering tiles.&#39;</span><span class="p">)</span>
+<span class="c1"># save the dataframe of relevant tiles to a .shp file </span>
+<span class="c1"># gdal is used to clip the spatial datasets with a .shp mask.</span>
+<span class="c1"># ensure the mask is in the same crs as the tiles.</span>
+<span class="n">reproj_mask_path</span> <span class="o">=</span> <span class="n">polygon_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.geojson&#39;</span><span class="p">,</span> <span class="s1">&#39;_daymet_mask.shp&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">reproj_mask_path</span><span class="p">):</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">region_polygon</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">daymet_proj</span><span class="p">)</span>
+    <span class="n">mask</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">reproj_mask_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>daymet tile index is in EPSG:4326
+There are 6 covering tiles.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># * 2129: Daily</span>
+<span class="c1"># * 2131: Monthly average</span>
+<span class="c1"># * 2130: Annual average</span>
+<span class="n">code</span> <span class="o">=</span> <span class="mi">2129</span>
+
+<span class="n">daymet_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tmax&#39;</span><span class="p">,</span> <span class="s1">&#39;tmin&#39;</span><span class="p">,</span> <span class="s1">&#39;prcp&#39;</span><span class="p">,</span> <span class="s1">&#39;srad&#39;</span><span class="p">,</span> <span class="s1">&#39;swe&#39;</span><span class="p">,</span> <span class="s1">&#39;vp&#39;</span><span class="p">]</span>
+<span class="n">years</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span><span class="mi">2023</span><span class="p">))</span>
+
+<span class="n">daymet_url_base</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;https://thredds.daac.ornl.gov/thredds/fileServer/ornldaac/</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">/tiles/&#39;</span>                
+<span class="n">base_command</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;wget -q --show-progress --progress=bar:force --limit-rate=3m </span><span class="si">{</span><span class="n">daymet_url_base</span><span class="si">}</span><span class="s1">&#39;</span>
+
+
+<span class="n">code_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">2129</span><span class="p">:</span> <span class="s1">&#39;daily&#39;</span><span class="p">,</span> <span class="mi">2130</span><span class="p">:</span> <span class="s1">&#39;annual&#39;</span><span class="p">,</span> <span class="mi">2131</span><span class="p">:</span> <span class="s1">&#39;monthly&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">batch_commands</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">yr</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">daymet_params</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">tile_ids</span><span class="p">:</span>
+            <span class="n">param_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">daymet_folder</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">param_dir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">param_dir</span><span class="p">)</span>            
+
+            <span class="n">file_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">yr</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">tile</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">yr</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">.nc&#39;</span>
+            <span class="n">save_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">daymet_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">tile</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">yr</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">.nc&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">save_fpath</span><span class="p">):</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="n">base_command</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s1"> -O </span><span class="si">{</span><span class="n">save_fpath</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">batch_commands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+                
+
+<span class="c1"># # # download the files in parallel</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_commands</span><span class="p">)</span><span class="si">}</span><span class="s1"> files to download&#39;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pl</span><span class="p">:</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">batch_commands</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1 files to download
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/media/danbot/Samsu 100%[===================&gt;]  65.96M  3.09MB/s    in 37s     
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="process-nasa-daymet-data">
+<h2>Process NASA DAYMET Data<a class="headerlink" href="#process-nasa-daymet-data" title="Permalink to this heading">#</a></h2>
+<p>To process the NASA DAYMET data spanning from 1980 to 2022 for specific parameters (‘tmax’, ‘tmin’, ‘prcp’, ‘srad’, ‘swe’, ‘vp’) within a set of polygons, we will use the following approach:</p>
+<ol class="arabic simple">
+<li><p><strong>Data Preparation</strong>: Merge the .nc (NetCDF) tiles in an xarray dataset.</p></li>
+<li><p><strong>Temporal Statistics</strong>: For each year and parameter:<br />
+a. Load the relevant .nc files using xarray,<br />
+b. Compute mean/max/total annual values for each year (use resample method on the time coordinate),<br />
+c. Compute mean annual (mean of years),<br />
+d. Output file as raster (tif).</p></li>
+<li><p><strong>Raster Crop</strong>: Use gdalwarp to crop the output raster to the region.</p></li>
+<li><p><strong>Attribute Extraction</strong>: for the set of basins generated in Notebook 4, mask the output rasters to get 6 climate indices per basin.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_open_dataset</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">grp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open a dataset using ``xarray``.</span>
+<span class="sd">    From pydaymet: https://github.com/hyriver/pydaymet/blob/44ca8be043f2ac27bb815ac3e70e33094da22730/pydaymet/pydaymet.py</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;netcdf4&quot;</span><span class="p">,</span> <span class="n">chunks</span><span class="o">=</span><span class="p">{},</span>
+                         <span class="n">mask_and_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ds</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">resample_annual</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">tile_id</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adapted from pydaymet get_bygeom()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">param_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">daymet_folder</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+    <span class="n">clm_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">param_folder</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">param_folder</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">e</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.xml&#39;</span><span class="p">))])</span>   
+
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">_open_dataset</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">clm_files</span><span class="p">[:</span><span class="mi">4</span><span class="p">]),</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)[</span><span class="n">param</span><span class="p">]</span>    
+    <span class="c1">#  write crs BEFORE AND AFTER resampling!</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">write_nodata</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">write_crs</span><span class="p">(</span><span class="n">daymet_proj</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;prcp&#39;</span><span class="p">]:</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;1y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">param</span> <span class="o">==</span> <span class="s1">&#39;swe&#39;</span><span class="p">:</span>
+        <span class="c1"># HYSETS uses average annual maximum</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;1y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;1y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">annual_mean</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">annual_mean</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">write_crs</span><span class="p">(</span><span class="n">daymet_proj</span><span class="p">)</span>
+    <span class="n">annual_mean</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">write_nodata</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">annual_mean</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">to_raster</span><span class="p">(</span><span class="n">output_fpath</span><span class="p">)</span>
+    
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_tile_mosaic</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">reproj_fpath</span><span class="p">):</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="mi">1980</span>
+    <span class="n">param_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">daymet_folder</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+    <span class="n">data_folder</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;data/daymet_data&#39;</span>
+    
+    <span class="c1"># fpath = f&#39;{tid}_{year}_{param}.nc&#39;</span>
+    <span class="n">file_pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;*_</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">_mean_annual.tiff&#39;</span>
+    <span class="n">vrt_fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">_mosaic.vrt&#39;</span>
+    <span class="n">vrt_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_folder</span><span class="p">,</span> <span class="n">vrt_fname</span><span class="p">)</span>
+
+    <span class="c1"># warp and save the file path</span>
+    <span class="n">reproj_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">_mosaic_3005.tiff&#39;</span><span class="p">)</span>
+    <span class="c1"># assemble the mosaic</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;gdalbuildvrt </span><span class="si">{</span><span class="n">vrt_fpath</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">data_folder</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">file_pattern</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="c1"># print(cmd)</span>
+    <span class="c1"># print(asdf)</span>
+    <span class="n">warp_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;gdalwarp -multi -cutline </span><span class="si">{</span><span class="n">reproj_mask_path</span><span class="si">}</span><span class="s1"> -crop_to_cutline -wo CUTLINE_ALL_TOUCHED=TRUE -t_srs EPSG:3005 -co TILED=YES -co BIGTIFF=YES -co COMPRESS=DEFLATE -co NUM_THREADS=ALL_CPUS </span><span class="si">{</span><span class="n">vrt_fpath</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">reproj_fpath</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vrt_fpath</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">warp_cmd</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">vrt_fpath</span><span class="p">)</span>
+    
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="create-raster-tif-files">
+<h2>Create raster (tif) files<a class="headerlink" href="#create-raster-tif-files" title="Permalink to this heading">#</a></h2>
+<p>Given netcdf file inputs describing the 6 parameters on a daily frequency, summarize down to one spatial layer (mean annual) for each parameter that we will clip to the region polygon.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">daymet_params</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;processing </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">param_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">daymet_folder</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">tid</span> <span class="ow">in</span> <span class="n">tile_ids</span><span class="p">:</span>
+        <span class="n">output_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">tid</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">_mean_annual.tiff&#39;</span>
+        <span class="n">folder</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;data/daymet_data/</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">/&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+        <span class="n">output_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_fpath</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">resample_annual</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">tid</span><span class="p">,</span> <span class="n">output_fpath</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Resampling failed on </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1"> tile id: </span><span class="si">{</span><span class="n">tid</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">continue</span>
+    <span class="c1"># mosaic_fpath = f&#39;data/daymet_data/{param}_.vrt&#39;</span>
+    <span class="n">reproj_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;data/daymet_data/&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">_mosaic_3005.tiff&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">reproj_fpath</span><span class="p">):</span>
+        <span class="n">create_tile_mosaic</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">reproj_fpath</span><span class="p">)</span>
+    
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>processing tmax
+processing tmin
+processing prcp
+processing srad
+processing swe
+processing vp
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="4_Basin_Delineation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">4. Basin Delineation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="6_Attribute_Extraction.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">5. Basin Attribute Extraction</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-and-registering-for-nasa-daymet-data">Accessing and Registering for NASA DAYMET Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#process-nasa-daymet-data">Process NASA DAYMET Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-raster-tif-files">Create raster (tif) files</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Dan Kovacek
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
