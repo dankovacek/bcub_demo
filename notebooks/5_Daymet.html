@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>6. Climate Attribute Development- NASA Daymet &#8212; British Columbia Ungauged Basin Dataset</title>
+    <title>Climate Attribute Development- NASA Daymet &#8212; British Columbia Ungauged Basin Dataset</title>
   
   
   
@@ -66,8 +66,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/5_Daymet';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="5. Basin Attribute Extraction" href="6_Attribute_Extraction.html" />
-    <link rel="prev" title="4. Basin Delineation" href="4_Basin_Delineation.html" />
+    <link rel="next" title="Basin Attribute Extraction" href="6_Attribute_Extraction.html" />
+    <link rel="prev" title="Basin Delineation" href="4_Basin_Delineation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -159,12 +159,12 @@ const thebe_selector_output = ".output, .cell_output"
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="1_Getting_Started.html">1. Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_DEM_Preprocessing.html">2. Digital Elevation Preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_Pour_Point_Extraction.html">3. Pour Point Extraction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_Basin_Delineation.html">4. Basin Delineation</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">6. Climate Attribute Development- NASA Daymet</a></li>
-<li class="toctree-l1"><a class="reference internal" href="6_Attribute_Extraction.html">5. Basin Attribute Extraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_Getting_Started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_DEM_Preprocessing.html">Digital Elevation Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_Pour_Point_Extraction.html">Pour Point Extraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_Basin_Delineation.html">Basin Delineation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Climate Attribute Development- NASA Daymet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_Attribute_Extraction.html">Basin Attribute Extraction</a></li>
 </ul>
 
     </div>
@@ -348,7 +348,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>6. Climate Attribute Development- NASA Daymet</h1>
+    <h1>Climate Attribute Development- NASA Daymet</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -373,7 +373,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="climate-attribute-development-nasa-daymet">
-<h1>6. Climate Attribute Development- NASA Daymet<a class="headerlink" href="#climate-attribute-development-nasa-daymet" title="Permalink to this heading">#</a></h1>
+<h1>Climate Attribute Development- NASA Daymet<a class="headerlink" href="#climate-attribute-development-nasa-daymet" title="Permalink to this heading">#</a></h1>
 <figure class="align-default" id="id1">
 <a class="reference internal image-reference" href="../_images/animated_years.gif"><img alt="../_images/animated_years.gif" src="../_images/animated_years.gif" style="width: 600px;" /></a>
 <figcaption>
@@ -482,12 +482,6 @@ document.write(`
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>daymet tile index is in EPSG:4326
-There are 6 covering tiles.
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -496,7 +490,7 @@ There are 6 covering tiles.
 <span class="c1"># * 2130: Annual average</span>
 <span class="n">code</span> <span class="o">=</span> <span class="mi">2129</span>
 
-<span class="n">daymet_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tmax&#39;</span><span class="p">,</span> <span class="s1">&#39;tmin&#39;</span><span class="p">,</span> <span class="s1">&#39;prcp&#39;</span><span class="p">,</span> <span class="s1">&#39;srad&#39;</span><span class="p">,</span> <span class="s1">&#39;swe&#39;</span><span class="p">,</span> <span class="s1">&#39;vp&#39;</span><span class="p">]</span>
+<span class="n">daymet_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;prcp&#39;</span><span class="p">]</span><span class="c1">#&#39;tmax&#39;, &#39;tmin&#39;, &#39;prcp&#39;, &#39;srad&#39;, &#39;swe&#39;, &#39;vp&#39;]</span>
 <span class="n">years</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span><span class="mi">2023</span><span class="p">))</span>
 
 <span class="n">daymet_url_base</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;https://thredds.daac.ornl.gov/thredds/fileServer/ornldaac/</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">/tiles/&#39;</span>                
@@ -527,14 +521,6 @@ There are 6 covering tiles.
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_commands</span><span class="p">)</span><span class="si">}</span><span class="s1"> files to download&#39;</span><span class="p">)</span>
 <span class="k">with</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pl</span><span class="p">:</span>
     <span class="n">pl</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">batch_commands</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1 files to download
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/media/danbot/Samsu 100%[===================&gt;]  65.96M  3.09MB/s    in 37s     
 </pre></div>
 </div>
 </div>
@@ -571,13 +557,15 @@ d. Output file as raster (tif).</p></li>
     <span class="n">param_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">daymet_folder</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
     <span class="n">clm_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">param_folder</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">param_folder</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">e</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.xml&#39;</span><span class="p">))])</span>   
 
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">_open_dataset</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">clm_files</span><span class="p">[:</span><span class="mi">4</span><span class="p">]),</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)[</span><span class="n">param</span><span class="p">]</span>    
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">_open_dataset</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">clm_files</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)[</span><span class="n">param</span><span class="p">]</span>    
     <span class="c1">#  write crs BEFORE AND AFTER resampling!</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">write_nodata</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">write_crs</span><span class="p">(</span><span class="n">daymet_proj</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;prcp&#39;</span><span class="p">]:</span>
-        <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;1y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># note that sum handles nan values differently than max and mean</span>
+        <span class="c1"># explicitly set skipna=False or the assembled mosaic will be wonky</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;1y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skipna</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">param</span> <span class="o">==</span> <span class="s1">&#39;swe&#39;</span><span class="p">:</span>
         <span class="c1"># HYSETS uses average annual maximum</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="s1">&#39;1y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">keep_attrs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -641,22 +629,12 @@ d. Output file as raster (tif).</p></li>
                 <span class="n">resample_annual</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">tid</span><span class="p">,</span> <span class="n">output_fpath</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Resampling failed on </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1"> tile id: </span><span class="si">{</span><span class="n">tid</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
                 <span class="k">continue</span>
-    <span class="c1"># mosaic_fpath = f&#39;data/daymet_data/{param}_.vrt&#39;</span>
     <span class="n">reproj_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;data/daymet_data/&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">_mosaic_3005.tiff&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">reproj_fpath</span><span class="p">):</span>
         <span class="n">create_tile_mosaic</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">reproj_fpath</span><span class="p">)</span>
     
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>processing tmax
-processing tmin
-processing prcp
-processing srad
-processing swe
-processing vp
 </pre></div>
 </div>
 </div>
@@ -701,7 +679,7 @@ processing vp
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">4. Basin Delineation</p>
+        <p class="prev-next-title">Basin Delineation</p>
       </div>
     </a>
     <a class="right-next"
@@ -709,7 +687,7 @@ processing vp
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">5. Basin Attribute Extraction</p>
+        <p class="prev-next-title">Basin Attribute Extraction</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

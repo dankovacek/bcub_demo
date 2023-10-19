@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>5. Basin Attribute Extraction &#8212; British Columbia Ungauged Basin Dataset</title>
+    <title>Basin Attribute Extraction &#8212; British Columbia Ungauged Basin Dataset</title>
   
   
   
@@ -66,7 +66,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/6_Attribute_Extraction';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="6. Climate Attribute Development- NASA Daymet" href="5_Daymet.html" />
+    <link rel="prev" title="Climate Attribute Development- NASA Daymet" href="5_Daymet.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -158,12 +158,12 @@ const thebe_selector_output = ".output, .cell_output"
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="1_Getting_Started.html">1. Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_DEM_Preprocessing.html">2. Digital Elevation Preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_Pour_Point_Extraction.html">3. Pour Point Extraction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_Basin_Delineation.html">4. Basin Delineation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_Daymet.html">6. Climate Attribute Development- NASA Daymet</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">5. Basin Attribute Extraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_Getting_Started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_DEM_Preprocessing.html">Digital Elevation Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_Pour_Point_Extraction.html">Pour Point Extraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_Basin_Delineation.html">Basin Delineation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_Daymet.html">Climate Attribute Development- NASA Daymet</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Basin Attribute Extraction</a></li>
 </ul>
 
     </div>
@@ -347,7 +347,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>5. Basin Attribute Extraction</h1>
+    <h1>Basin Attribute Extraction</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -366,7 +366,10 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#direct-attribute-retrieval">Direct Attribute Retrieval</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#land-cover-data">Land Cover Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#land-cover-data">Land Cover Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-paths-to-retrieve-daymet-raster-files-processed-in-notebook-5">Set up paths to retrieve Daymet raster files (processed in Notebook 5)</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
 </ul>
             </nav>
@@ -380,7 +383,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="basin-attribute-extraction">
-<h1>5. Basin Attribute Extraction<a class="headerlink" href="#basin-attribute-extraction" title="Permalink to this heading">#</a></h1>
+<h1>Basin Attribute Extraction<a class="headerlink" href="#basin-attribute-extraction" title="Permalink to this heading">#</a></h1>
 <figure class="align-default" id="id5">
 <a class="reference internal image-reference" href="../_images/nalcms_VI.gif"><img alt="../_images/nalcms_VI.gif" src="../_images/nalcms_VI.gif" style="width: 600px;" /></a>
 <figcaption>
@@ -390,8 +393,7 @@ document.write(`
 <p>The final step is to capture geospatial information describing the soil, land cover, and terrain of each basin using the polygons we developed in the previous notebook.  First we need to get the data and trim it to the Vancouver Island polygon.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># isolate the GLHYMPS data</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
 <span class="kn">from</span> <span class="nn">utilities</span> <span class="kn">import</span> <span class="n">retrieve_raster</span><span class="p">,</span> <span class="n">clip_raster_to_basin</span>
@@ -407,7 +409,6 @@ document.write(`
 <span class="kn">import</span> <span class="nn">metpy</span>
 
 <span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">jit</span>
-
 <span class="kn">from</span> <span class="nn">scipy.stats.mstats</span> <span class="kn">import</span> <span class="n">gmean</span>
 </pre></div>
 </div>
@@ -745,7 +746,7 @@ document.write(`
     <span class="c1">#         print(prop_dict)</span>
             
     <span class="n">prop_dict</span> <span class="o">=</span> <span class="n">recategorize_lulc</span><span class="p">(</span><span class="n">prop_dict</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">prop_dict</span>    
+    <span class="k">return</span> <span class="n">prop_dict</span>
 
 
 <span class="k">def</span> <span class="nf">process_lulc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">basin_geom</span><span class="p">,</span> <span class="n">nalcms_raster</span><span class="p">):</span>
@@ -948,22 +949,6 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_climate_data_by_basin</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">basin</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Clip the daymet data by parameter for each basin polygon,</span>
-<span class="sd">    and calculate the annual spatial mean. </span>
-<span class="sd">    Return an array of annual spatial mean values, 1980-2022.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">basin</span> <span class="o">=</span> <span class="n">basin</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
-    <span class="n">clipped_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">basin</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">all_touched</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>        
-    <span class="n">spatial_means</span> <span class="o">=</span> <span class="n">clipped_data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">])</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">spatial_means</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">year</span> <span class="o">=</span> <span class="mi">2010</span>
 <span class="n">nalcms_fpath</span> <span class="o">=</span> <span class="s1">&#39;data/geospatial_layers/NALCMS_2010_Vancouver_Island.tif&#39;</span>
 <span class="n">nalcms</span><span class="p">,</span> <span class="n">nalcms_crs</span><span class="p">,</span> <span class="n">nalcms_affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">nalcms_fpath</span><span class="p">)</span>
@@ -973,11 +958,24 @@ document.write(`
 </div>
 </div>
 </div>
+<section id="set-up-paths-to-retrieve-daymet-raster-files-processed-in-notebook-5">
+<h3>Set up paths to retrieve Daymet raster files (processed in Notebook 5)<a class="headerlink" href="#set-up-paths-to-retrieve-daymet-raster-files-processed-in-notebook-5" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">daymet_paths</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">daymet_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;prcp&#39;</span><span class="p">,</span> <span class="s1">&#39;tmin&#39;</span><span class="p">,</span> <span class="s1">&#39;tmax&#39;</span><span class="p">,</span> <span class="s1">&#39;vp&#39;</span><span class="p">,</span> <span class="s1">&#39;swe&#39;</span><span class="p">,</span> <span class="s1">&#39;srad&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">daymet_params</span><span class="p">:</span>
+    <span class="n">daymet_paths</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;data/daymet_data/</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">_mosaic_3005.tiff&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">daymet_data</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">daymet_params</span><span class="p">:</span>
-    <span class="n">daymet_data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;data/daymet_data/</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">_1980_to_2022.nc&#39;</span><span class="p">,</span> <span class="n">decode_coords</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">climate_param</span> <span class="ow">in</span> <span class="n">daymet_params</span><span class="p">:</span>
+    <span class="n">daymet_raster</span><span class="p">,</span> <span class="n">daymet_crs</span><span class="p">,</span> <span class="n">daymet_affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">daymet_paths</span><span class="p">[</span><span class="n">climate_param</span><span class="p">])</span>
+    <span class="n">daymet_data</span><span class="p">[</span><span class="n">climate_param</span><span class="p">]</span> <span class="o">=</span> <span class="n">daymet_raster</span>
 </pre></div>
 </div>
 </div>
@@ -993,7 +991,28 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">basins_df</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_fname</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_basins.gpkg&#39;</span><span class="p">,</span> <span class="s1">&#39;_properties.gpkg&#39;</span><span class="p">)</span>
+<span class="n">results_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">results_fname</span><span class="p">)</span>
+
+<span class="c1"># filter the basins_df dataframe to exclude basins already processed</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">results_path</span><span class="p">):</span>
+    <span class="n">existing_results</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">)</span>
+    <span class="n">match_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ppt_x&#39;</span><span class="p">,</span> <span class="s1">&#39;ppt_y&#39;</span><span class="p">]</span>
+    <span class="n">n_basins</span><span class="p">,</span> <span class="n">n_results</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">basins_df</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">existing_results</span><span class="p">)</span>
+    <span class="n">basins_df</span> <span class="o">=</span> <span class="n">basins_df</span><span class="p">[</span><span class="o">~</span><span class="n">basins_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">match_cols</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">existing_results</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">match_cols</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">)]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n_results</span><span class="si">}</span><span class="s1"> basins already processed.  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basins_df</span><span class="p">)</span><span class="si">}</span><span class="s1"> remaining.&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">update_results</span><span class="p">(</span><span class="n">new_data</span><span class="p">):</span>
+    <span class="n">new_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">new_data</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="mi">3005</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">results_path</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">new_df</span><span class="p">)</span><span class="si">}</span><span class="s1"> basins (</span><span class="si">{</span><span class="n">results_fname</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+        <span class="n">new_df</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">existing_data</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">existing_data</span><span class="p">,</span> <span class="n">new_df</span><span class="p">]))</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">new_df</span><span class="p">)</span><span class="si">}</span><span class="s1"> basins (</span><span class="si">{</span><span class="n">results_fname</span><span class="si">}</span><span class="s1">) (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="si">}</span><span class="s1"> processed).&#39;</span><span class="p">)</span>
+        
 </pre></div>
 </div>
 </div>
@@ -1002,20 +1021,13 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">all_basin_data</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-<span class="c1"># for i, row in basins_df[:n_samples].iterrows():</span>
+<span class="n">last_index</span> <span class="o">=</span> <span class="n">basins_df</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">basins_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">t_int</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="n">ii</span> <span class="o">=</span> <span class="n">i</span>
-        <span class="k">if</span> <span class="n">ii</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">ii</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">ut</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_int</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span> <span class="o">/</span> <span class="n">ii</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    ...Processing </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basins_df</span><span class="p">)</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">ut</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> s/basin)&#39;</span><span class="p">)</span>
     <span class="n">basin_data</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;region&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">region</span>
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
 
-    <span class="n">basin_polygon</span> <span class="o">=</span> <span class="n">basins_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">basin_polygon</span> <span class="o">=</span> <span class="n">basins_df</span><span class="p">[</span><span class="n">basins_df</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     
     <span class="n">clip_ok</span><span class="p">,</span> <span class="n">clipped_dem</span> <span class="o">=</span> <span class="n">clip_raster_to_basin</span><span class="p">(</span><span class="n">basin_polygon</span><span class="p">,</span> <span class="n">region_dem</span><span class="p">)</span>    
     
@@ -1035,47 +1047,44 @@ document.write(`
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;Slope_deg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">slope</span>
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;Aspect_deg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aspect</span>
 
-
     <span class="n">mean_el</span><span class="p">,</span> <span class="n">median_el</span><span class="p">,</span> <span class="n">min_el</span><span class="p">,</span> <span class="n">max_el</span> <span class="o">=</span> <span class="n">process_basin_elevation</span><span class="p">(</span><span class="n">clipped_dem</span><span class="p">)</span>
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;median_el&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">median_el</span>
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;mean_el&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_el</span>
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;max_el&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_el</span>
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;min_el&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">min_el</span>
     
-    <span class="c1"># geojson only supports one geometry column</span>
-    
+    <span class="c1"># geojson only supports one geometry column    </span>
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">geometry</span>
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;ppt_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;ppt_x&#39;</span><span class="p">]</span>
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;ppt_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;ppt_y&#39;</span><span class="p">]</span>
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;centroid_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;centroid_x&#39;</span><span class="p">]</span>
     <span class="n">basin_data</span><span class="p">[</span><span class="s1">&#39;centroid_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;centroid_y&#39;</span><span class="p">]</span>
 
-    <span class="k">for</span> <span class="n">climate_param</span> <span class="ow">in</span> <span class="n">daymet_params</span><span class="p">:</span>
-        <span class="n">test_basin</span> <span class="o">=</span> <span class="n">basins_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="mi">0</span><span class="p">]]</span>
-        <span class="n">basin_data</span><span class="p">[</span><span class="n">climate_param</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_climate_data_by_basin</span><span class="p">(</span><span class="n">climate_param</span><span class="p">,</span> <span class="n">basin_polygon</span><span class="p">,</span> <span class="n">daymet_data</span><span class="p">[</span><span class="n">climate_param</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">daymet_params</span><span class="p">:</span>
+        <span class="n">clipped_data</span> <span class="o">=</span> <span class="n">daymet_data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">basin_polygon</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">all_touched</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">spatial_mean</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">clipped_data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">basin_data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">spatial_mean</span>
     
     <span class="n">all_basin_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">basin_data</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">output</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">all_basin_data</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="mi">3005</span><span class="p">)</span>
-<span class="n">output</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">daymet_params</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
-    <span class="n">param_vals</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">r</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="mi">1</span><span class="p">]]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">output</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_vals</span>
 
-<span class="n">output_fname</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_basins.gpkg&#39;</span><span class="p">,</span> <span class="s1">&#39;_properties.gpkg&#39;</span><span class="p">)</span>
-<span class="n">output</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">output_fname</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="si">}</span><span class="s1"> basins (</span><span class="si">{</span><span class="n">output_fname</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+    <span class="c1"># don&#39;t update at the very start</span>
+    <span class="c1"># only update periodically </span>
+    <span class="c1"># update at the end!</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">max</span><span class="p">(</span><span class="n">basins_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">)):</span>
+        <span class="n">t_int</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">ii</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="n">ii</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ii</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">ut</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_int</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span> <span class="o">/</span> <span class="n">ii</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    ...Processing </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basins_df</span><span class="p">)</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">ut</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> s/basin)&#39;</span><span class="p">)</span>
+        <span class="n">update_results</span><span class="p">(</span><span class="n">all_basin_data</span><span class="p">)</span>
+        <span class="n">all_basin_data</span> <span class="o">=</span> <span class="p">[]</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>Processing time is roughly 1.3s/basin on a ~2018 Intel i7-8850H CPU &#64; 2.60GHz.  Processing time is proporti onal to the size of clipped DEM, and using JIT in the <code class="docutils literal notranslate"><span class="pre">process_slope_and_aspect</span></code> function yields ~3X performance improvement.</p>
+<p>Processing time is roughly 0.8s/basin on a ~2018 Intel i7-8850H CPU &#64; 2.60GHz.  Processing time is proporti onal to the size of clipped DEM, and if you can use JIT in the <code class="docutils literal notranslate"><span class="pre">process_slope_and_aspect</span></code> function, it yields roughly 3X performance improvement.</p>
+</section>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
@@ -1119,7 +1128,7 @@ document.write(`
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">6. Climate Attribute Development- NASA Daymet</p>
+        <p class="prev-next-title">Climate Attribute Development- NASA Daymet</p>
       </div>
     </a>
 </div></div>
@@ -1149,7 +1158,10 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#direct-attribute-retrieval">Direct Attribute Retrieval</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#land-cover-data">Land Cover Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#land-cover-data">Land Cover Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-paths-to-retrieve-daymet-raster-files-processed-in-notebook-5">Set up paths to retrieve Daymet raster files (processed in Notebook 5)</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
 </ul>
   </nav></div>
