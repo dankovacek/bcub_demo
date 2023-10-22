@@ -962,19 +962,11 @@ document.write(`
 <h3>Set up paths to retrieve Daymet raster files (processed in Notebook 5)<a class="headerlink" href="#set-up-paths-to-retrieve-daymet-raster-files-processed-in-notebook-5" title="Permalink to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">daymet_paths</span> <span class="o">=</span> <span class="p">{}</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">daymet_paths</span><span class="p">,</span> <span class="n">daymet_data</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{}</span>
 <span class="n">daymet_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;prcp&#39;</span><span class="p">,</span> <span class="s1">&#39;tmin&#39;</span><span class="p">,</span> <span class="s1">&#39;tmax&#39;</span><span class="p">,</span> <span class="s1">&#39;vp&#39;</span><span class="p">,</span> <span class="s1">&#39;swe&#39;</span><span class="p">,</span> <span class="s1">&#39;srad&#39;</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">daymet_params</span><span class="p">:</span>
-    <span class="n">daymet_paths</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;data/daymet_data/</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">_mosaic_3005.tiff&#39;</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">daymet_data</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="k">for</span> <span class="n">climate_param</span> <span class="ow">in</span> <span class="n">daymet_params</span><span class="p">:</span>
-    <span class="n">daymet_raster</span><span class="p">,</span> <span class="n">daymet_crs</span><span class="p">,</span> <span class="n">daymet_affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">daymet_paths</span><span class="p">[</span><span class="n">climate_param</span><span class="p">])</span>
+    <span class="n">fpath</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;data/daymet_data/</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">_mosaic_3005.tiff&#39;</span>
+    <span class="n">daymet_raster</span><span class="p">,</span> <span class="n">daymet_crs</span><span class="p">,</span> <span class="n">daymet_affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
     <span class="n">daymet_data</span><span class="p">[</span><span class="n">climate_param</span><span class="p">]</span> <span class="o">=</span> <span class="n">daymet_raster</span>
 </pre></div>
 </div>
@@ -1013,6 +1005,11 @@ document.write(`
         <span class="n">output</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">new_df</span><span class="p">)</span><span class="si">}</span><span class="s1"> basins (</span><span class="si">{</span><span class="n">results_fname</span><span class="si">}</span><span class="s1">) (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="si">}</span><span class="s1"> processed).&#39;</span><span class="p">)</span>
         
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20761 basins already processed.  0 remaining.
 </pre></div>
 </div>
 </div>

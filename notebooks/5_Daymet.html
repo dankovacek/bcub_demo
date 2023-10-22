@@ -490,7 +490,7 @@ document.write(`
 <span class="c1"># * 2130: Annual average</span>
 <span class="n">code</span> <span class="o">=</span> <span class="mi">2129</span>
 
-<span class="n">daymet_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;prcp&#39;</span><span class="p">]</span><span class="c1">#&#39;tmax&#39;, &#39;tmin&#39;, &#39;prcp&#39;, &#39;srad&#39;, &#39;swe&#39;, &#39;vp&#39;]</span>
+<span class="n">daymet_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;prcp&#39;</span><span class="p">,</span> <span class="s1">&#39;tmax&#39;</span><span class="p">,</span> <span class="s1">&#39;tmin&#39;</span><span class="p">,</span> <span class="s1">&#39;prcp&#39;</span><span class="p">,</span> <span class="s1">&#39;srad&#39;</span><span class="p">,</span> <span class="s1">&#39;swe&#39;</span><span class="p">,</span> <span class="s1">&#39;vp&#39;</span><span class="p">]</span>
 <span class="n">years</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1980</span><span class="p">,</span><span class="mi">2023</span><span class="p">))</span>
 
 <span class="n">daymet_url_base</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;https://thredds.daac.ornl.gov/thredds/fileServer/ornldaac/</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">/tiles/&#39;</span>                
@@ -507,7 +507,7 @@ document.write(`
         <span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">tile_ids</span><span class="p">:</span>
             <span class="n">param_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">daymet_folder</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">param_dir</span><span class="p">):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">param_dir</span><span class="p">)</span>            
+                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">param_dir</span><span class="p">)</span>
 
             <span class="n">file_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">yr</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">tile</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">yr</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">.nc&#39;</span>
             <span class="n">save_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">daymet_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">tile</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">yr</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">.nc&#39;</span><span class="p">)</span>
@@ -519,8 +519,8 @@ document.write(`
 
 <span class="c1"># # # download the files in parallel</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_commands</span><span class="p">)</span><span class="si">}</span><span class="s1"> files to download&#39;</span><span class="p">)</span>
-<span class="k">with</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pl</span><span class="p">:</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">,</span> <span class="n">batch_commands</span><span class="p">)</span>
+<span class="c1"># with mp.Pool() as pl:</span>
+<span class="c1">#     pl.map(os.system, batch_commands)</span>
 </pre></div>
 </div>
 </div>
