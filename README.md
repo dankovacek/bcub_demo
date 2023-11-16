@@ -7,7 +7,7 @@ BC Ungauged Basin Database
 ==========================
 
 ![The British Columbia Ungauged Basin
-Database](notebooks/img/all_pts_and_stns.png)
+Database](notebooks/img/study_region_main_figure.png)
 
 Introduction
 ------------
