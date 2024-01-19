@@ -1,10 +1,10 @@
 # BC Ungauged Basin Database (BCUB)
 
-```{figure} notebooks/img/all_pts_and_stns.png
+```{figure} notebooks/img/main_fig_updated.png
 ---
 width: 500px
 ---
-The basin pour points in the BCUB dataset appear above like black pointillism dots, while existing and historical streamflow monitoring stations are in green.
+The basin pour points in the BCUB dataset appear above like black pointillism dots, overlaid by the active (green) and historical (orange) streamflow monitoring stations.
 ```
 
 ## Introduction

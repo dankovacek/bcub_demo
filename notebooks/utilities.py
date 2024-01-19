@@ -314,3 +314,40 @@ def redistribute_vertices(geom, distance):
         return type(geom)([p for p in parts if not p.is_empty])
     else:
         raise ValueError('unhandled geometry %s', (geom.geom_type,))
+
+def clip_and_reproject_NALCMS(data_folder, output_folder, input_nalcms_fname, mask_path, reproj_nalcms_file, year):
+    input_nalcms_fpath = os.path.join(data_folder, input_nalcms_fname)
+    reproj_nalcms_fpath = os.path.join(output_folder, reproj_nalcms_file)
+    reproj_mask_nalcms_crs = os.path.join(data_folder, 'convex_hull_nalcms_crs.shp')
+    if not os.path.exists(reproj_nalcms_fpath):
+    
+        if not os.path.exists(input_nalcms_fpath):
+            raise Exception('Download and unzip the NALCMS data, see the README for details.')
+        
+        nalcms_data = rxr.open_rasterio(input_nalcms_fpath)
+        nalcms_wkt = nalcms_data.rio.crs.wkt
+        
+        # get the mask geometry and reproject it using the original NALCMS projection
+        if not os.path.exists(reproj_mask_nalcms_crs):
+            mask = gpd.read_file(mask_path).to_crs(nalcms_wkt)
+            mask = mask.convex_hull
+            mask.to_file(reproj_mask_nalcms_crs)
+        
+        # first clip the raster, 
+        print('Clipping NALCMS raster to region bounds.')
+        clipped_nalcms_path = os.path.join(data_folder, f'NA_NALCMS_landcover_{year}_clipped.tif')
+        clip_command = f"gdalwarp -s_srs '{nalcms_wkt}' -cutline {reproj_mask_nalcms_crs} -crop_to_cutline -multi -of gtiff {input_nalcms_fpath} {clipped_nalcms_path} -wo NUM_THREADS=ALL_CPUS"
+        if not os.path.exists(clipped_nalcms_path):
+            os.system(clip_command)
+        
+        print('\nReprojecting clipped NALCMS raster.')
+        # insert  "-co COMPRESS=LZW" in the command below to use compression (slower but much smaller file size)
+        warp_command = f"gdalwarp -q -s_srs '{nalcms_wkt}' -t_srs EPSG:3005 -of gtiff {clipped_nalcms_path} {reproj_nalcms_fpath} -r bilinear -wo NUM_THREADS=ALL_CPUS"
+        print(warp_command)
+        if not os.path.exists(reproj_nalcms_fpath):
+            os.system(warp_command) 
+        
+        # remove the intermediate step
+        if os.path.exists(clipped_nalcms_path):
+            os.remove(clipped_nalcms_path)
+
