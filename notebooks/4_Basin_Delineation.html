@@ -612,10 +612,17 @@ document.write(`
     
 <span class="n">all_data</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">batch_dfs</span><span class="p">),</span> <span class="n">crs</span><span class="o">=</span><span class="n">layer</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
 <span class="n">all_data</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">output_fpath</span><span class="p">)</span>
-<span class="n">all_data</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span>
-    <span class="n">output_fpath</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.geojson&#39;</span><span class="p">,</span> <span class="s1">&#39;.gpkg&#39;</span><span class="p">),</span> 
-    <span class="n">driver</span><span class="o">=</span><span class="s1">&#39;GPKG&#39;</span><span class="p">,</span> 
-    <span class="n">layer</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;pour_points&#39;</span><span class="p">)</span>
+
+<span class="c1"># save to Parquet</span>
+<span class="n">all_data</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span>
+    <span class="n">output_fpath</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.geojson&#39;</span><span class="p">,</span> <span class="s1">&#39;.parquet&#39;</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># alternatively, you can use the geopackage format</span>
+<span class="c1"># all_data.to_file(</span>
+<span class="c1">#     output_fpath.replace(&#39;.geojson&#39;, &#39;.gpkg&#39;), </span>
+<span class="c1">#     driver=&#39;GPKG&#39;, </span>
+<span class="c1">#     layer=f&#39;pour_points&#39;)</span>
 </pre></div>
 </div>
 </div>

@@ -1,6 +1,6 @@
 # BC Ungauged Basin Database (BCUB)
 
-```{figure} notebooks/img/study_region_main_figure.png
+```{figure} notebooks/img/main_fig_updated.png
 ---
 width: 500px
 ---

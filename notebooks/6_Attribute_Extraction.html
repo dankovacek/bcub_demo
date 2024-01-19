@@ -66,6 +66,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/6_Attribute_Extraction';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Import and Usage Example" href="7_Dataset_plot_example.html" />
     <link rel="prev" title="Climate Attribute Development- NASA Daymet" href="5_Daymet.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -164,6 +165,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="4_Basin_Delineation.html">Basin Delineation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_Daymet.html">Climate Attribute Development- NASA Daymet</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Basin Attribute Extraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_Dataset_plot_example.html">Data Import and Usage Example</a></li>
 </ul>
 
     </div>
@@ -365,7 +367,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#download-and-clip-glhymps-data">Download and Clip GLHYMPS Data</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#direct-attribute-retrieval">Direct Attribute Retrieval</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#direct-attribute-extraction">Direct Attribute Extraction</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#land-cover-data">Land Cover Data</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-paths-to-retrieve-daymet-raster-files-processed-in-notebook-5">Set up paths to retrieve Daymet raster files (processed in Notebook 5)</a></li>
 </ul>
@@ -396,7 +398,7 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
-<span class="kn">from</span> <span class="nn">utilities</span> <span class="kn">import</span> <span class="n">retrieve_raster</span><span class="p">,</span> <span class="n">clip_raster_to_basin</span>
+<span class="kn">from</span> <span class="nn">utilities</span> <span class="kn">import</span> <span class="n">retrieve_raster</span><span class="p">,</span> <span class="n">clip_raster_to_basin</span><span class="p">,</span> <span class="n">clip_and_reproject_NALCMS</span>
 <span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -420,57 +422,18 @@ document.write(`
 <h3>Download and Clip NALCMS Data<a class="headerlink" href="#download-and-clip-nalcms-data" title="Permalink to this heading">#</a></h3>
 <p>North American Coverage of the NALCMS can be downloaded from <a class="reference external" href="http://www.cec.org/north-american-land-change-monitoring-system/">North American Land Change Monitoring System (NALCMS)</a>.</p>
 <p>Download the files you want to work with from the link above, and use the steps below to crop the dataset to the region of interest (Vancouver Island).</p>
-<p>Note there are NALCMS datasets for 2010, 2015, and 2020 but we only process the 2010 dataset in this example.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
-<span class="c1"># set the path to the downloaded NALCMS file</span>
-<span class="n">nalcms_fpath</span> <span class="o">=</span> <span class="s1">&#39;/home/danbot/Documents/code/23/bcub/input_data/NALCMS/NA_NALCMS_2010_v2_land_cover_30m.tif&#39;</span>
-<span class="n">nalcms_raster</span><span class="p">,</span> <span class="n">nalcms_crs</span><span class="p">,</span> <span class="n">nalcms_affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">nalcms_fpath</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">nalcms_crs</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">nalcms_crs</span> <span class="o">=</span> <span class="n">nalcms_raster</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">wkt</span>
-</pre></div>
-</div>
-</div>
-</div>
+<p>Note there are NALCMS datasets for 2010, 2015, and 2020 and we’ll crop each of these in order to look at land cover changes in the next notebook.</p>
 <p>Import the region polygon</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># set the path to the polygon mask for clipping the NALCMS raster</span>
-<span class="n">year</span> <span class="o">=</span> <span class="mi">2010</span>
 <span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;Vancouver_Island&#39;</span>
-<span class="n">polygon_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="sa">f</span><span class="s1">&#39;data/region_polygons/</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">.geojson&#39;</span><span class="p">)</span>
-<span class="n">region_polygon</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">polygon_path</span><span class="p">)</span>
+<span class="n">mask_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="sa">f</span><span class="s1">&#39;data/region_polygons/</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">.geojson&#39;</span><span class="p">)</span>
+<span class="n">region_polygon</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">mask_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># this should be the same path as Notebook 2</span>
-<span class="n">dem_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;notebooks/data/processed_dem/&#39;</span><span class="p">)</span>
-<span class="n">dem_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dem_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_3005.tif&#39;</span><span class="p">)</span>
-<span class="n">region_dem</span><span class="p">,</span> <span class="n">dem_crs</span><span class="p">,</span> <span class="n">dem_affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">dem_fpath</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>We need the polygon mask used to clip the raster to have the same CRS as the raster.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The mask has to be saved as a shp file, geojson doesn’t work for some reason with gdalwarp.</p>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">reproj_mask_path</span> <span class="o">=</span> <span class="n">polygon_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.geojson&#39;</span><span class="p">,</span> <span class="s1">&#39;_clipping_mask.shp&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">reproj_mask_path</span><span class="p">):</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="n">region_polygon</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">nalcms_raster</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">wkt</span><span class="p">)</span>
-    <span class="n">mask</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">reproj_mask_path</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Set the DEM path which was created in notebook 2.  Use the original DEM, not the (pit/depression) filled DEM.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a folder for the output geospatial layers</span>
@@ -483,19 +446,38 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clipped_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;NALCMS_</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">.tif&#39;</span><span class="p">)</span>
-<span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;gdalwarp -s_srs &#39;</span><span class="si">{</span><span class="n">nalcms_crs</span><span class="si">}</span><span class="s2">&#39; -cutline </span><span class="si">{</span><span class="n">reproj_mask_path</span><span class="si">}</span><span class="s2"> -crop_to_cutline -multi -of gtiff </span><span class="si">{</span><span class="n">nalcms_fpath</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">clipped_path</span><span class="si">}</span><span class="s2"> -wo NUM_THREADS=ALL_CPUS&quot;</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">clipped_path</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+
+<span class="c1"># set the path to the downloaded NALCMS file(s)</span>
+<span class="n">nalcms_folder</span> <span class="o">=</span> <span class="s1">&#39;/media/danbot/Samsung_T51/large_sample_hydrology/common_data/NALCMS_NA/&#39;</span>
+
+<span class="n">nalcms_files</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">2010</span><span class="p">:</span> <span class="s1">&#39;NA_NALCMS_2010_v2_land_cover_30m.tif&#39;</span><span class="p">,</span>
+    <span class="mi">2015</span><span class="p">:</span> <span class="s1">&#39;NA_NALCMS_2015_v2_land_cover_30m.tif&#39;</span><span class="p">,</span>
+    <span class="mi">2020</span><span class="p">:</span> <span class="s1">&#39;NA_NALCMS_landcover_2020_30m.tif&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">nalcms_files</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">output_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;NALCMS_</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s1">_clipped_3005.tif&#39;</span>
+    <span class="n">output_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;notebooks/data/geospatial_layers/&#39;</span><span class="p">)</span>
+    <span class="c1"># clip and reproject the raster and create a new file</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)):</span>
+        <span class="n">clip_and_reproject_NALCMS</span><span class="p">(</span>
+            <span class="n">nalcms_folder</span><span class="p">,</span> <span class="n">output_folder</span><span class="p">,</span> 
+            <span class="n">nalcms_files</span><span class="p">[</span><span class="n">y</span><span class="p">],</span> 
+            <span class="n">mask_path</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">y</span>
+        <span class="p">)</span>    
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Copying color table from /media/danbot/Samsung_T51/large_sample_hydrology/common_data/NALCMS_NA/NA_NALCMS_landcover_2020_30m.tif to new file.
-Creating output file that is 18989P x 29797L.
-Processing /media/danbot/Samsung_T51/large_sample_hydrology/common_data/NALCMS_NA/NA_NALCMS_landcover_2020_30m.tif [1/1] : 0Using internal nodata values (e.g. 128) for image /media/danbot/Samsung_T51/large_sample_hydrology/common_data/NALCMS_NA/NA_NALCMS_landcover_2020_30m.tif.
-Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrology/common_data/NALCMS_NA/NA_NALCMS_landcover_2020_30m.tif to destination /home/danbot/Documents/code/23/bcub_demo/notebooks/data/geospatial_layers/NALCMS_2020_FRA.tif.
-...10...20...30...40...50...60...70...80...90...
+</div>
+<p>Set the DEM path which was created in notebook 2.  Use the original DEM, not the (pit/depression) filled DEM.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># this should be the same path as Notebook 2</span>
+<span class="n">dem_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;notebooks/data/processed_dem/&#39;</span><span class="p">)</span>
+<span class="n">dem_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dem_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s1">_3005.tif&#39;</span><span class="p">)</span>
+<span class="n">region_dem</span><span class="p">,</span> <span class="n">dem_crs</span><span class="p">,</span> <span class="n">dem_affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">dem_fpath</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -534,17 +516,114 @@ Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrolo
 </div>
 </section>
 </section>
-<section id="direct-attribute-retrieval">
-<h2>Direct Attribute Retrieval<a class="headerlink" href="#direct-attribute-retrieval" title="Permalink to this heading">#</a></h2>
+<section id="direct-attribute-extraction">
+<h2>Direct Attribute Extraction<a class="headerlink" href="#direct-attribute-extraction" title="Permalink to this heading">#</a></h2>
 <p>Here we load the basin polygon batch files produced in the previous notebook, and iterate through polygons to extract attributes as we go.  This method is not the most performant, but the details of the process are hopefully clear.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">basins_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;data/basins/&#39;</span><span class="p">)</span>
-<span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;Vancouver_Island_basins.gpkg&#39;</span>
-<span class="n">basins_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basins_folder</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
+<span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;Vancouver_Island_basins.parquet&#39;</span>
+<span class="c1"># or use the geopackage</span>
+<span class="c1"># file = &#39;Vancouver_Island_basins.gpkg&#39;</span>
+<span class="c1"># basins_df = gpd.read_file(os.path.join(basins_folder, file))</span>
+<span class="n">basins_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basins_folder</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
+<span class="c1"># basins_df = basins_df.rename({&#39;ppt_x&#39;: &#39;ppt_lon_m_3005&#39;, &#39;ppt_y&#39;: &#39;ppt_lat_m_3005&#39;}, axis=1)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">basins_df</span><span class="p">))</span>
+<span class="n">basins_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20761
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>acc</th>
+      <th>ix</th>
+      <th>jx</th>
+      <th>ppt_x</th>
+      <th>ppt_y</th>
+      <th>centroid_x</th>
+      <th>centroid_y</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>7072.0</td>
+      <td>10211</td>
+      <td>12194</td>
+      <td>1040609</td>
+      <td>437027</td>
+      <td>1039849</td>
+      <td>438696</td>
+      <td>POLYGON ((1038776.917 439618.564, 1038841.431 ...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>234099.0</td>
+      <td>1603</td>
+      <td>6068</td>
+      <td>904334</td>
+      <td>628514</td>
+      <td>911107</td>
+      <td>617904</td>
+      <td>POLYGON ((899882.690 629237.891, 900097.483 62...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>13316.0</td>
+      <td>3178</td>
+      <td>10284</td>
+      <td>998120</td>
+      <td>593478</td>
+      <td>999595</td>
+      <td>593396</td>
+      <td>POLYGON ((998118.436 594779.872, 998458.510 59...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2055.0</td>
+      <td>4955</td>
+      <td>6318</td>
+      <td>909895</td>
+      <td>553948</td>
+      <td>909243</td>
+      <td>554412</td>
+      <td>POLYGON ((909270.083 554912.060, 909371.350 55...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>43332.0</td>
+      <td>3367</td>
+      <td>10446</td>
+      <td>1001724</td>
+      <td>589274</td>
+      <td>999161</td>
+      <td>589680</td>
+      <td>POLYGON ((996824.700 592399.347, 996883.984 59...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <p><strong>Table: Set of metadata and catchment attributes in the BCUB database derived from USGS 3DEP (DEM), NALCMS (land cover), and GLHYMPS (soil) datasets.</strong></p>
 <table class="colwidths-auto table">
@@ -722,15 +801,15 @@ Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrolo
     <span class="k">return</span> <span class="n">lulc_check</span>
 
 
-<span class="k">def</span> <span class="nf">recategorize_lulc</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>    
-    <span class="n">forest</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Land_Use_Forest_frac&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-    <span class="n">shrub</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Land_Use_Shrubs_frac&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">])</span>
-    <span class="n">grass</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Land_Use_Grass_frac&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">16</span><span class="p">])</span>
-    <span class="n">wetland</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Land_Use_Wetland_frac&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">14</span><span class="p">])</span>
-    <span class="n">crop</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Land_Use_Crops_frac&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">15</span><span class="p">])</span>
-    <span class="n">urban</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Land_Use_Urban_frac&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">17</span><span class="p">])</span>
-    <span class="n">water</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Land_Use_Water_frac&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">18</span><span class="p">])</span>
-    <span class="n">snow_ice</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Land_Use_Snow_Ice_frac&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">19</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">recategorize_lulc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>    
+    <span class="n">forest</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Land_Use_Forest_frac_</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+    <span class="n">shrub</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Land_Use_Shrubs_frac_</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">])</span>
+    <span class="n">grass</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Land_Use_Grass_frac_</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">16</span><span class="p">])</span>
+    <span class="n">wetland</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Land_Use_Wetland_frac_</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">14</span><span class="p">])</span>
+    <span class="n">crop</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Land_Use_Crops_frac_</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">15</span><span class="p">])</span>
+    <span class="n">urban</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Land_Use_Urban_frac_</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">17</span><span class="p">])</span>
+    <span class="n">water</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Land_Use_Water_frac_</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">18</span><span class="p">])</span>
+    <span class="n">snow_ice</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Land_Use_Snow_Ice_frac_</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">19</span><span class="p">])</span>
     <span class="n">lulc_dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="n">forest</span><span class="p">,</span> <span class="n">shrub</span><span class="p">,</span> <span class="n">grass</span><span class="p">,</span> <span class="n">wetland</span><span class="p">,</span> <span class="n">crop</span><span class="p">,</span> <span class="n">urban</span><span class="p">,</span> <span class="n">water</span><span class="p">,</span> <span class="n">snow_ice</span><span class="p">]:</span>
         <span class="n">prop_vals</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="k">if</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
@@ -738,7 +817,7 @@ Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrolo
     <span class="k">return</span> <span class="n">lulc_dict</span>
     
 
-<span class="k">def</span> <span class="nf">get_value_proportions</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_value_proportions</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
     <span class="c1"># create a dictionary of land cover values by coverage proportion</span>
     <span class="c1"># assuming raster pixels are equally sized, we can keep the</span>
     <span class="c1"># raster in geographic coordinates and just count pixel ratios</span>
@@ -754,20 +833,20 @@ Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrolo
     <span class="c1">#         print(f&#39;Land cover category 15 is found: {prop_dict[15]}%&#39;)</span>
     <span class="c1">#         print(prop_dict)</span>
             
-    <span class="n">prop_dict</span> <span class="o">=</span> <span class="n">recategorize_lulc</span><span class="p">(</span><span class="n">prop_dict</span><span class="p">)</span>
+    <span class="n">prop_dict</span> <span class="o">=</span> <span class="n">recategorize_lulc</span><span class="p">(</span><span class="n">prop_dict</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">prop_dict</span>
 
 
-<span class="k">def</span> <span class="nf">process_lulc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">basin_geom</span><span class="p">,</span> <span class="n">nalcms_raster</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">process_lulc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">basin_geom</span><span class="p">,</span> <span class="n">nalcms_raster</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
     <span class="c1"># polygon = basin_polygon.to_crs(nalcms_crs)</span>
     <span class="c1"># assert polygon.crs == nalcms.rio.crs</span>
     <span class="k">if</span> <span class="n">nalcms_raster</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">crs</span> <span class="o">!=</span> <span class="n">basin_geom</span><span class="o">.</span><span class="n">crs</span><span class="p">:</span>
         <span class="n">basin_geom</span> <span class="o">=</span> <span class="n">basin_geom</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">nalcms_raster</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">to_wkt</span><span class="p">())</span>
     <span class="n">raster_loaded</span><span class="p">,</span> <span class="n">lu_raster_clipped</span> <span class="o">=</span> <span class="n">clip_raster_to_basin</span><span class="p">(</span><span class="n">basin_geom</span><span class="p">,</span> <span class="n">nalcms_raster</span><span class="p">)</span>
     <span class="c1"># checksum verifies proportions sum to 1</span>
-    <span class="n">prop_dict</span> <span class="o">=</span> <span class="n">get_value_proportions</span><span class="p">(</span><span class="n">lu_raster_clipped</span><span class="p">)</span>
+    <span class="n">prop_dict</span> <span class="o">=</span> <span class="n">get_value_proportions</span><span class="p">(</span><span class="n">lu_raster_clipped</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span>
     <span class="n">lulc_check</span> <span class="o">=</span> <span class="n">check_lulc_sum</span><span class="p">(</span><span class="n">prop_dict</span><span class="p">)</span>
-    <span class="n">prop_dict</span><span class="p">[</span><span class="s1">&#39;lulc_check&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lulc_check</span>
+    <span class="n">prop_dict</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;lulc_check_</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lulc_check</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">prop_dict</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -958,11 +1037,12 @@ Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrolo
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">year</span> <span class="o">=</span> <span class="mi">2010</span>
-<span class="n">nalcms_fpath</span> <span class="o">=</span> <span class="s1">&#39;data/geospatial_layers/NALCMS_2010_Vancouver_Island.tif&#39;</span>
-<span class="n">nalcms</span><span class="p">,</span> <span class="n">nalcms_crs</span><span class="p">,</span> <span class="n">nalcms_affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">nalcms_fpath</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">nalcms_crs</span><span class="p">:</span>
-    <span class="n">nalcms_crs</span> <span class="o">=</span> <span class="n">nalcms</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">to_wkt</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_nalcms_data</span><span class="p">(</span><span class="n">year</span><span class="p">):</span>
+    <span class="n">nalcms_fpath</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;data/geospatial_layers/NALCMS_</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">_clipped_3005.tif&#39;</span>
+    <span class="n">nalcms</span><span class="p">,</span> <span class="n">nalcms_crs</span><span class="p">,</span> <span class="n">nalcms_affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">nalcms_fpath</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">nalcms_crs</span><span class="p">:</span>
+        <span class="n">nalcms_crs</span> <span class="o">=</span> <span class="n">nalcms</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">to_wkt</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">nalcms</span><span class="p">,</span> <span class="n">nalcms_crs</span><span class="p">,</span> <span class="n">nalcms_affine</span>
 </pre></div>
 </div>
 </div>
@@ -973,8 +1053,8 @@ Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrolo
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">daymet_paths</span><span class="p">,</span> <span class="n">daymet_data</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{}</span>
 <span class="n">daymet_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;prcp&#39;</span><span class="p">,</span> <span class="s1">&#39;tmin&#39;</span><span class="p">,</span> <span class="s1">&#39;tmax&#39;</span><span class="p">,</span> <span class="s1">&#39;vp&#39;</span><span class="p">,</span> <span class="s1">&#39;swe&#39;</span><span class="p">,</span> <span class="s1">&#39;srad&#39;</span><span class="p">]</span>
-<span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">daymet_params</span><span class="p">:</span>
-    <span class="n">fpath</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;data/daymet_data/</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">_mosaic_3005.tiff&#39;</span>
+<span class="k">for</span> <span class="n">climate_param</span> <span class="ow">in</span> <span class="n">daymet_params</span><span class="p">:</span>
+    <span class="n">fpath</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;data/daymet_data/</span><span class="si">{</span><span class="n">climate_param</span><span class="si">}</span><span class="s1">_mosaic_3005.tiff&#39;</span>
     <span class="n">daymet_raster</span><span class="p">,</span> <span class="n">daymet_crs</span><span class="p">,</span> <span class="n">daymet_affine</span> <span class="o">=</span> <span class="n">retrieve_raster</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
     <span class="n">daymet_data</span><span class="p">[</span><span class="n">climate_param</span><span class="p">]</span> <span class="o">=</span> <span class="n">daymet_raster</span>
 </pre></div>
@@ -992,13 +1072,22 @@ Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrolo
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_fname</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_basins.gpkg&#39;</span><span class="p">,</span> <span class="s1">&#39;_properties.gpkg&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># results_fname = file.replace(&#39;_basins.gpkg&#39;, &#39;_attributes.gpkg&#39;)</span>
+<span class="n">results_fname</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_basins.parquet&#39;</span><span class="p">,</span> <span class="s1">&#39;_attributes.parquet&#39;</span><span class="p">)</span>
 <span class="n">results_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">results_fname</span><span class="p">)</span>
 
 <span class="c1"># filter the basins_df dataframe to exclude basins already processed</span>
 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">results_path</span><span class="p">):</span>
-    <span class="n">existing_results</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">)</span>
-    <span class="n">match_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ppt_x&#39;</span><span class="p">,</span> <span class="s1">&#39;ppt_y&#39;</span><span class="p">]</span>
+    <span class="c1"># if &#39;ppt_y&#39; in basins_df.columns:</span>
+    <span class="c1">#     basins_df = basins_df.rename({&#39;ppt_y&#39;: &#39;ppt_lat_m_3005&#39;}, axis=1)</span>
+    <span class="c1"># if &#39;ppt_x&#39; in basins_df.columns:</span>
+    <span class="c1">#     basins_df = basins_df.rename({&#39;ppt_x&#39;: &#39;ppt_lon_m_3005&#39;}, axis=1)</span>
+    <span class="k">if</span> <span class="n">results_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.parquet&#39;</span><span class="p">):</span>
+        <span class="n">existing_results</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">results_path</span><span class="p">)</span>
+        <span class="c1"># existing_results[[&#39;ppt_lon_m_3005&#39;, &#39;ppt_lat_m_3005&#39;]] = existing_results[[&#39;ppt_lon_m_3005&#39;, &#39;ppt_lat_m_3005&#39;]].round(0).astype(int)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">existing_results</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">)</span>    
+    <span class="c1"># print(asdf)</span>
     <span class="n">n_basins</span><span class="p">,</span> <span class="n">n_results</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">basins_df</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">existing_results</span><span class="p">)</span>
     <span class="n">basins_df</span> <span class="o">=</span> <span class="n">basins_df</span><span class="p">[</span><span class="o">~</span><span class="n">basins_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">match_cols</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">existing_results</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">match_cols</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">)]</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n_results</span><span class="si">}</span><span class="s1"> basins already processed.  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basins_df</span><span class="p">)</span><span class="si">}</span><span class="s1"> remaining.&#39;</span><span class="p">)</span>
@@ -1007,18 +1096,21 @@ Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrolo
     <span class="n">new_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">new_data</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="mi">3005</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">results_path</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">new_df</span><span class="p">)</span><span class="si">}</span><span class="s1"> basins (</span><span class="si">{</span><span class="n">results_fname</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
-        <span class="n">new_df</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">results_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.parquet&#39;</span><span class="p">):</span>
+            <span class="n">new_df</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">results_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_df</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">existing_data</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">)</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">existing_data</span><span class="p">,</span> <span class="n">new_df</span><span class="p">]))</span>
-        <span class="n">output</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">results_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.parquet&#39;</span><span class="p">):</span>
+            <span class="n">existing_data</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">results_path</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">existing_data</span><span class="p">,</span> <span class="n">new_df</span><span class="p">]))</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">results_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">existing_data</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">existing_data</span><span class="p">,</span> <span class="n">new_df</span><span class="p">]))</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">results_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">new_df</span><span class="p">)</span><span class="si">}</span><span class="s1"> basins (</span><span class="si">{</span><span class="n">results_fname</span><span class="si">}</span><span class="s1">) (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="si">}</span><span class="s1"> processed).&#39;</span><span class="p">)</span>
         
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20761 basins already processed.  0 remaining.
 </pre></div>
 </div>
 </div>
@@ -1036,11 +1128,13 @@ Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrolo
     <span class="n">basin_polygon</span> <span class="o">=</span> <span class="n">basins_df</span><span class="p">[</span><span class="n">basins_df</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     
     <span class="n">clip_ok</span><span class="p">,</span> <span class="n">clipped_dem</span> <span class="o">=</span> <span class="n">clip_raster_to_basin</span><span class="p">(</span><span class="n">basin_polygon</span><span class="p">,</span> <span class="n">region_dem</span><span class="p">)</span>    
-    
-    <span class="n">land_cover</span> <span class="o">=</span> <span class="n">process_lulc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">basin_polygon</span><span class="p">,</span> <span class="n">nalcms</span><span class="p">)</span>
-    <span class="n">land_cover</span> <span class="o">=</span> <span class="n">land_cover</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s1">&#39;records&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># print(&#39;     lulc complate&#39;)</span>
-    <span class="n">basin_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">land_cover</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">2015</span><span class="p">,</span> <span class="mi">2020</span><span class="p">]:</span>
+        <span class="n">nalcms</span><span class="p">,</span> <span class="n">nalcms_crs</span><span class="p">,</span> <span class="n">nalcms_affine</span> <span class="o">=</span> <span class="n">get_nalcms_data</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">land_cover</span> <span class="o">=</span> <span class="n">process_lulc</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">basin_polygon</span><span class="p">,</span> <span class="n">nalcms</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">land_cover</span> <span class="o">=</span> <span class="n">land_cover</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s1">&#39;records&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># print(&#39;     lulc complate&#39;)</span>
+        <span class="n">basin_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">land_cover</span><span class="p">)</span>
     
     <span class="n">soil</span> <span class="o">=</span> <span class="n">process_glhymps</span><span class="p">(</span><span class="n">basin_polygon</span><span class="p">,</span> <span class="n">glhymps_path</span><span class="p">)</span>
     <span class="n">porosity</span> <span class="o">=</span> <span class="n">get_soil_properties</span><span class="p">(</span><span class="n">soil</span><span class="p">,</span> <span class="s1">&#39;Porosity&#39;</span><span class="p">)</span>
@@ -1082,9 +1176,35 @@ Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrolo
         <span class="k">if</span> <span class="n">ii</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">ii</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">ut</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_int</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span> <span class="o">/</span> <span class="n">ii</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    ...Processing </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basins_df</span><span class="p">)</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">ut</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> s/basin)&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    ...processed </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basins_df</span><span class="p">)</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">ut</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> s/basin).  Updating results file.&#39;</span><span class="p">)</span>
         <span class="n">update_results</span><span class="p">(</span><span class="n">all_basin_data</span><span class="p">)</span>
         <span class="n">all_basin_data</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    ...processed 100/20761 (1.04 s/basin).  Updating results file.
+Processed 101 basins (Vancouver_Island_attributes.parquet).
+    ...processed 200/20761 (0.99 s/basin).  Updating results file.
+Processed 100 basins (Vancouver_Island_attributes.parquet) (201 processed).
+    ...processed 300/20761 (1.00 s/basin).  Updating results file.
+Processed 100 basins (Vancouver_Island_attributes.parquet) (301 processed).
+    ...processed 400/20761 (1.01 s/basin).  Updating results file.
+Processed 100 basins (Vancouver_Island_attributes.parquet) (401 processed).
+    ...processed 500/20761 (1.02 s/basin).  Updating results file.
+Processed 100 basins (Vancouver_Island_attributes.parquet) (501 processed).
+    ...processed 600/20761 (1.03 s/basin).  Updating results file.
+Processed 100 basins (Vancouver_Island_attributes.parquet) (601 processed).
+    ...processed 700/20761 (1.04 s/basin).  Updating results file.
+Processed 100 basins (Vancouver_Island_attributes.parquet) (701 processed).
+    ...processed 800/20761 (1.05 s/basin).  Updating results file.
+Processed 100 basins (Vancouver_Island_attributes.parquet) (801 processed).
+    ...processed 900/20761 (1.06 s/basin).  Updating results file.
+Processed 100 basins (Vancouver_Island_attributes.parquet) (901 processed).
+    ...processed 1000/20761 (1.07 s/basin).  Updating results file.
+Processed 100 basins (Vancouver_Island_attributes.parquet) (1001 processed).
+    ...processed 1100/20761 (1.07 s/basin).  Updating results file.
+Processed 100 basins (Vancouver_Island_attributes.parquet) (1101 processed).
 </pre></div>
 </div>
 </div>
@@ -1137,6 +1257,15 @@ Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrolo
         <p class="prev-next-title">Climate Attribute Development- NASA Daymet</p>
       </div>
     </a>
+    <a class="right-next"
+       href="7_Dataset_plot_example.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Data Import and Usage Example</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div></div>
   
 </div>
@@ -1163,7 +1292,7 @@ Copying nodata values from source /media/danbot/Samsung_T51/large_sample_hydrolo
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#download-and-clip-glhymps-data">Download and Clip GLHYMPS Data</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#direct-attribute-retrieval">Direct Attribute Retrieval</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#direct-attribute-extraction">Direct Attribute Extraction</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#land-cover-data">Land Cover Data</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-paths-to-retrieve-daymet-raster-files-processed-in-notebook-5">Set up paths to retrieve Daymet raster files (processed in Notebook 5)</a></li>
 </ul>
